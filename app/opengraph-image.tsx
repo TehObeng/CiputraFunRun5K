@@ -83,7 +83,7 @@ export default async function OpenGraphImage() {
               <span>Treasure Hunt</span>
               <span>Doorprize</span>
             </div>
-            <div style={{ color: "#ffb36a" }}>Harga mulai Rp150.000</div>
+            <div style={{ color: "#ffb36a" }}>Harga Early Birds Rp150.000</div>
           </div>
         </div>
       </div>

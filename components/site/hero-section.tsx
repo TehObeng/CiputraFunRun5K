@@ -55,7 +55,7 @@ export function HeroSection({ content, registrationUrl }: HeroSectionProps) {
 
           <div className="grid gap-3 sm:grid-cols-3">
             <div className="rounded-[22px] border border-white/10 bg-white/8 p-4 backdrop-blur">
-              <p className="text-xs uppercase tracking-[0.24em] text-white/56">Harga mulai</p>
+              <p className="text-xs uppercase tracking-[0.24em] text-white/56">Harga Early Birds</p>
               <p className="mt-2 text-2xl font-bold text-brand-lime">{formatRupiah(startingPrice)}</p>
             </div>
             <div className="rounded-[22px] border border-white/10 bg-white/8 p-4 backdrop-blur">
