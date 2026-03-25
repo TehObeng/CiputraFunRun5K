@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 
-import { readSiteContent } from "@/lib/site-content";
+import { getSiteContent } from "@/lib/site-content";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -13,7 +13,7 @@ export const size = {
 export const contentType = "image/png";
 
 export default async function OpenGraphImage() {
-  const content = await readSiteContent();
+  const content = await getSiteContent();
 
   return new ImageResponse(
     (
@@ -83,7 +83,7 @@ export default async function OpenGraphImage() {
               <span>Treasure Hunt</span>
               <span>Doorprize</span>
             </div>
-            <div style={{ color: "#ffb36a" }}>Harga mulai Rp150.000</div>
+            <div style={{ color: "#ffb36a" }}>Harga Early Birds Rp150.000</div>
           </div>
         </div>
       </div>

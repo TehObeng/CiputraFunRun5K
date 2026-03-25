@@ -1,50 +1,48 @@
-import { promises as fs } from "node:fs";
-import path from "node:path";
-
-import { getDefaultSiteContent, GOOGLE_FORM_PLACEHOLDER } from "@/lib/default-content";
+import { getDefaultSiteContent } from "@/lib/default-content";
 import { siteContentSchema, type SiteContent } from "@/lib/site-schema";
+import { getSupabasePublicClient, SITE_CONTENT_ROW_ID } from "@/lib/supabase";
 
-const CONTENT_FILE_PATH = path.join(process.cwd(), "data", "site-content.json");
+const FIXED_REGISTRATION_URL = "https://forms.gle/tEz7uZ2i6y5Gfsbv8";
 
-export function resolveRegistrationUrl(content?: Pick<SiteContent, "googleFormUrl">) {
-  return (
-    content?.googleFormUrl?.trim() ||
-    process.env.GOOGLE_FORM_URL?.trim() ||
-    GOOGLE_FORM_PLACEHOLDER
-  );
+/** Returns the fixed Google Form registration URL used by all public CTAs. */
+export function resolveRegistrationUrl() {
+  return FIXED_REGISTRATION_URL;
 }
 
-export async function readSiteContent(): Promise<SiteContent> {
+/** Returns clean default content. */
+export function getDefaultContent(): SiteContent {
   const fallback = getDefaultSiteContent();
+  return {
+    ...fallback,
+    googleFormUrl: FIXED_REGISTRATION_URL,
+  };
+}
 
-  try {
-    const raw = await fs.readFile(CONTENT_FILE_PATH, "utf-8");
-    const parsed = JSON.parse(raw) as unknown;
-    const result = siteContentSchema.safeParse(parsed);
+/** Loads site content from Supabase with schema validation and safe fallback. */
+export async function getSiteContent(): Promise<SiteContent> {
+  const fallback = getDefaultContent();
+  const client = getSupabasePublicClient();
 
-    if (result.success) {
-      return {
-        ...result.data,
-        googleFormUrl: resolveRegistrationUrl(result.data),
-      };
-    }
-
-    return fallback;
-  } catch {
+  if (!client) {
     return fallback;
   }
+
+  const { data, error } = await client.from("site_content").select("content").eq("id", SITE_CONTENT_ROW_ID).single();
+
+  if (error || !data?.content) {
+    return fallback;
+  }
+
+  const parsed = siteContentSchema.safeParse(data.content);
+
+  if (!parsed.success) {
+    return fallback;
+  }
+
+  return {
+    ...parsed.data,
+    googleFormUrl: FIXED_REGISTRATION_URL,
+  };
 }
 
-export async function saveSiteContent(content: SiteContent) {
-  const validated = siteContentSchema.parse({
-    ...content,
-    googleFormUrl: resolveRegistrationUrl(content),
-  });
-
-  await fs.mkdir(path.dirname(CONTENT_FILE_PATH), { recursive: true });
-  await fs.writeFile(CONTENT_FILE_PATH, `${JSON.stringify(validated, null, 2)}\n`, "utf-8");
-
-  return validated;
-}
-
-export { CONTENT_FILE_PATH };
+export { FIXED_REGISTRATION_URL };
