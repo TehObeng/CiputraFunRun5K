@@ -7,7 +7,7 @@ import { useState, useTransition } from "react";
 export function LoginPanel() {
   const router = useRouter();
   const [username, setUsername] = useState("admin");
-  const [password, setPassword] = useState("funrun123");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -57,7 +57,7 @@ export function LoginPanel() {
             </div>
             <div className="rounded-[24px] border border-white/10 bg-white/6 p-5">
               <p className="text-xs uppercase tracking-[0.2em] text-white/56">Storage</p>
-              <p className="mt-3 text-lg font-semibold">JSON file-based</p>
+              <p className="mt-3 text-lg font-semibold">Supabase</p>
             </div>
             <div className="rounded-[24px] border border-white/10 bg-white/6 p-5">
               <p className="text-xs uppercase tracking-[0.2em] text-white/56">Akses</p>
@@ -116,8 +116,7 @@ export function LoginPanel() {
           </form>
 
           <div className="mt-6 rounded-[24px] border border-brand-ink/10 bg-brand-peach/40 p-4 text-sm leading-7 text-brand-stone">
-            Default local development menggunakan `admin / funrun123` jika environment variable belum diubah. Ubah
-            sebelum deployment produksi.
+            Gunakan kredensial dari environment variable. Hindari memakai password default saat produksi.
           </div>
         </section>
       </div>

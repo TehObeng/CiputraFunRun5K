@@ -21,6 +21,9 @@ export function getDefaultContent(): SiteContent {
 /** Loads site content from Supabase with schema validation and safe fallback. */
 export async function getSiteContent(): Promise<SiteContent> {
   const fallback = getDefaultContent();
+  if (!supabasePublicClient) {
+    return fallback;
+  }
 
   const { data, error } = await supabasePublicClient
     .from("site_content")

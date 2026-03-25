@@ -34,7 +34,7 @@ export function Footer({
                 key={social.label}
                 href={social.url}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="rounded-full border border-brand-ink/10 bg-brand-cream px-4 py-2 font-medium text-brand-ink transition hover:-translate-y-0.5 hover:border-brand-coral/40"
               >
                 {social.label}
@@ -47,4 +47,3 @@ export function Footer({
     </footer>
   );
 }
-

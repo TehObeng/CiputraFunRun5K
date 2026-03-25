@@ -215,7 +215,7 @@ export function CmsEditor({ initialContent }: CmsEditorProps) {
                 Edit landing page Fun Run dari satu panel yang ringkas.
               </h1>
               <p className="mt-4 text-base leading-7 text-white/74 md:text-lg">
-                Semua perubahan disimpan ke file JSON dan langsung dipakai oleh halaman publik. Cocok untuk update cepat
+                Semua perubahan disimpan ke Supabase dan langsung dipakai oleh halaman publik. Cocok untuk update cepat
                 tanpa menyentuh source code.
               </p>
             </div>
@@ -224,7 +224,7 @@ export function CmsEditor({ initialContent }: CmsEditorProps) {
               <a
                 href="/"
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/14"
               >
                 <Globe2 className="size-4" />
