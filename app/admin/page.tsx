@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { CmsEditor } from "@/components/admin/cms-editor";
 import { LoginPanel } from "@/components/admin/login-panel";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
-import { readSiteContent } from "@/lib/site-content";
+import { getSiteContent } from "@/lib/site-content";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +19,7 @@ export default async function AdminPage() {
     return <LoginPanel />;
   }
 
-  const content = await readSiteContent();
+  const content = await getSiteContent();
 
   return <CmsEditor initialContent={content} />;
 }
