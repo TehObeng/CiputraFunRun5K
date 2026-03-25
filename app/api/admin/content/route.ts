@@ -40,6 +40,9 @@ export async function GET(request: Request) {
   if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ message: "Tidak memiliki akses." }, { status: 401 });
   }
+  if (!supabaseAdminClient) {
+    return NextResponse.json({ message: "Supabase admin belum dikonfigurasi." }, { status: 503 });
+  }
 
   const { data, error } = await supabaseAdminClient
     .from("site_content")
@@ -65,6 +68,9 @@ export async function PUT(request: Request) {
 
   if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ message: "Sesi admin tidak valid." }, { status: 401 });
+  }
+  if (!supabaseAdminClient) {
+    return NextResponse.json({ message: "Supabase admin belum dikonfigurasi." }, { status: 503 });
   }
 
   const body = await request.json().catch(() => null);
