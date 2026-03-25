@@ -18,7 +18,7 @@ type NavbarProps = {
 
 export function Navbar({ eventName, ctaText, registrationUrl }: NavbarProps) {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-2 pt-3 md:px-4">
+    <header className="sticky top-0 z-50 px-2 pt-3 md:px-4">
       <div className="mx-auto w-full max-w-6xl rounded-[28px] border border-white/12 bg-brand-ink/78 text-white shadow-[0_20px_50px_rgba(8,12,24,0.35)] backdrop-blur-xl">
         <div className="flex items-center justify-between gap-4 px-4 py-3 md:px-6">
           <a href="#beranda" className="flex items-center gap-3">

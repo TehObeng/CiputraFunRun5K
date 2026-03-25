@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { createAdminSession, verifyAdminCredentials } from "@/lib/admin-auth";
+import { createAdminSession, isAdminAuthConfigured, verifyAdminCredentials } from "@/lib/admin-auth";
+import { hasValidSameOrigin, jsonNoStore } from "@/lib/http-security";
 
 const loginSchema = z.object({
   username: z.string().trim().min(1, "Username wajib diisi."),
@@ -36,24 +36,35 @@ function isRateLimited(request: Request) {
 }
 
 export async function POST(request: Request) {
+  if (!hasValidSameOrigin(request)) {
+    return jsonNoStore({ message: "Origin request tidak valid." }, { status: 403 });
+  }
+
+  if (!isAdminAuthConfigured()) {
+    return jsonNoStore(
+      { message: "Admin auth belum dikonfigurasi. Set ADMIN_USERNAME, ADMIN_PASSWORD, dan CMS_SESSION_SECRET." },
+      { status: 503 },
+    );
+  }
+
   if (isRateLimited(request)) {
-    return NextResponse.json({ message: "Terlalu banyak percobaan login." }, { status: 429 });
+    return jsonNoStore({ message: "Terlalu banyak percobaan login." }, { status: 429 });
   }
 
   const body = await request.json().catch(() => null);
   const parsed = loginSchema.safeParse(body);
 
   if (!parsed.success) {
-    return NextResponse.json({ message: "Username dan password wajib diisi." }, { status: 400 });
+    return jsonNoStore({ message: "Username dan password wajib diisi." }, { status: 400 });
   }
 
   const isValid = await verifyAdminCredentials(parsed.data.username, parsed.data.password);
 
   if (!isValid) {
-    return NextResponse.json({ message: "Login gagal. Periksa kembali username dan password." }, { status: 401 });
+    return jsonNoStore({ message: "Login gagal. Periksa kembali username dan password." }, { status: 401 });
   }
 
   await createAdminSession();
 
-  return NextResponse.json({ message: "Login berhasil." });
+  return jsonNoStore({ message: "Login berhasil." });
 }

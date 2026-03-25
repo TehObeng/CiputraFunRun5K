@@ -11,6 +11,7 @@ type InputFieldProps = {
   placeholder?: string;
   type?: "text" | "number" | "url";
   helper?: string;
+  readOnly?: boolean;
 };
 
 type TextAreaFieldProps = {
@@ -41,6 +42,7 @@ export function InputField({
   placeholder,
   type = "text",
   helper,
+  readOnly = false,
 }: InputFieldProps) {
   return (
     <label className="block space-y-2">
@@ -50,7 +52,8 @@ export function InputField({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-2xl border border-brand-ink/10 bg-brand-cream px-4 py-3 text-sm outline-none transition focus:border-brand-coral"
+        readOnly={readOnly}
+        className="w-full rounded-2xl border border-brand-ink/10 bg-brand-cream px-4 py-3 text-sm outline-none transition focus:border-brand-coral read-only:cursor-not-allowed read-only:opacity-70"
       />
       {helper ? <p className="text-xs leading-6 text-brand-stone">{helper}</p> : null}
     </label>
