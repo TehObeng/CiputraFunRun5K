@@ -2,19 +2,21 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 
 import { cookies } from "next/headers";
 
+import { env } from "@/lib/env";
+
 const COOKIE_NAME = "funrun-admin-session";
 const SESSION_DURATION_SECONDS = 60 * 60 * 12;
 
 function getAdminUsername() {
-  return process.env.ADMIN_USERNAME?.trim() || "admin";
+  return env.ADMIN_USERNAME;
 }
 
 function getAdminPassword() {
-  return process.env.ADMIN_PASSWORD?.trim() || "funrun123";
+  return env.ADMIN_PASSWORD;
 }
 
 function getSessionSecret() {
-  return process.env.CMS_SESSION_SECRET?.trim() || "ganti-session-secret-sebelum-produksi";
+  return env.CMS_SESSION_SECRET;
 }
 
 function safeCompare(left: string, right: string) {
@@ -100,4 +102,3 @@ export async function isAdminAuthenticated() {
 
   return expiresAt > Date.now();
 }
-

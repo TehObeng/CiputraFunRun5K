@@ -10,13 +10,13 @@ import { MobileStickyCta } from "@/components/site/mobile-sticky-cta";
 import { Navbar } from "@/components/site/navbar";
 import { PricingSection } from "@/components/site/pricing-section";
 import { RegistrationStepsSection } from "@/components/site/registration-steps-section";
-import { readSiteContent, resolveRegistrationUrl } from "@/lib/site-content";
+import { getSiteContent, resolveRegistrationUrl } from "@/lib/site-content";
 import { getSiteUrl } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const content = await readSiteContent();
+  const content = await getSiteContent();
   const title = `${content.eventName} | Lari, DJ, Treasure Hunt, dan Doorprize`;
   const description = content.heroSubheadline;
 
@@ -43,8 +43,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const content = await readSiteContent();
-  const registrationUrl = resolveRegistrationUrl(content);
+  const content = await getSiteContent();
+  const registrationUrl = resolveRegistrationUrl();
 
   return (
     <div className="relative overflow-x-hidden bg-brand-sand text-brand-ink">
@@ -83,4 +83,3 @@ export default async function Home() {
     </div>
   );
 }
-
