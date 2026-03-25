@@ -2,21 +2,21 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 
 import { cookies } from "next/headers";
 
-import { env } from "@/lib/env";
+import { env, hasAdminAuthEnv } from "@/lib/env";
 
 const COOKIE_NAME = "funrun-admin-session";
 const SESSION_DURATION_SECONDS = 60 * 60 * 12;
 
 function getAdminUsername() {
-  return env.ADMIN_USERNAME;
+  return env.ADMIN_USERNAME ?? "";
 }
 
 function getAdminPassword() {
-  return env.ADMIN_PASSWORD;
+  return env.ADMIN_PASSWORD ?? "";
 }
 
 function getSessionSecret() {
-  return env.CMS_SESSION_SECRET;
+  return env.CMS_SESSION_SECRET ?? "";
 }
 
 function safeCompare(left: string, right: string) {
@@ -42,16 +42,28 @@ function createSessionToken(username: string) {
   return `${payload}:${signature}`;
 }
 
+export function isAdminAuthConfigured() {
+  return hasAdminAuthEnv();
+}
+
 export async function verifyAdminCredentials(username: string, password: string) {
+  if (!isAdminAuthConfigured()) {
+    return false;
+  }
+
   return safeCompare(username, getAdminUsername()) && safeCompare(password, getAdminPassword());
 }
 
 export async function createAdminSession() {
+  if (!isAdminAuthConfigured()) {
+    return;
+  }
+
   const cookieStore = await cookies();
 
   cookieStore.set(COOKIE_NAME, createSessionToken(getAdminUsername()), {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "strict",
     secure: process.env.NODE_ENV === "production",
     path: "/",
     maxAge: SESSION_DURATION_SECONDS,
@@ -63,7 +75,7 @@ export async function clearAdminSession() {
 
   cookieStore.set(COOKIE_NAME, "", {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: "strict",
     secure: process.env.NODE_ENV === "production",
     path: "/",
     maxAge: 0,
@@ -71,6 +83,10 @@ export async function clearAdminSession() {
 }
 
 export async function isAdminAuthenticated() {
+  if (!isAdminAuthConfigured()) {
+    return false;
+  }
+
   const cookieStore = await cookies();
   const rawToken = cookieStore.get(COOKIE_NAME)?.value;
 

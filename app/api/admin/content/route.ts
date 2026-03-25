@@ -1,6 +1,5 @@
-import { NextResponse } from "next/server";
-
 import { isAdminAuthenticated } from "@/lib/admin-auth";
+import { hasValidSameOrigin, jsonNoStore } from "@/lib/http-security";
 import { getDefaultContent } from "@/lib/site-content";
 import { siteContentSchema } from "@/lib/site-schema";
 import { SITE_CONTENT_ROW_ID, supabaseAdminClient } from "@/lib/supabase";
@@ -34,14 +33,14 @@ function isRateLimited(request: Request) {
 
 export async function GET(request: Request) {
   if (isRateLimited(request)) {
-    return NextResponse.json({ message: "Terlalu banyak request. Coba lagi sebentar." }, { status: 429 });
+    return jsonNoStore({ message: "Terlalu banyak request. Coba lagi sebentar." }, { status: 429 });
   }
 
   if (!(await isAdminAuthenticated())) {
-    return NextResponse.json({ message: "Tidak memiliki akses." }, { status: 401 });
+    return jsonNoStore({ message: "Tidak memiliki akses." }, { status: 401 });
   }
   if (!supabaseAdminClient) {
-    return NextResponse.json({ message: "Supabase admin belum dikonfigurasi." }, { status: 503 });
+    return jsonNoStore({ message: "Supabase admin belum dikonfigurasi." }, { status: 503 });
   }
 
   const { data, error } = await supabaseAdminClient
@@ -51,33 +50,37 @@ export async function GET(request: Request) {
     .single();
 
   if (error || !data?.content) {
-    return NextResponse.json({ data: getDefaultContent() });
+    return jsonNoStore({ data: getDefaultContent() });
   }
 
   const parsed = siteContentSchema.safeParse(data.content);
 
-  return NextResponse.json({
+  return jsonNoStore({
     data: parsed.success ? parsed.data : getDefaultContent(),
   });
 }
 
 export async function PUT(request: Request) {
+  if (!hasValidSameOrigin(request)) {
+    return jsonNoStore({ message: "Origin request tidak valid." }, { status: 403 });
+  }
+
   if (isRateLimited(request)) {
-    return NextResponse.json({ message: "Terlalu banyak request. Coba lagi sebentar." }, { status: 429 });
+    return jsonNoStore({ message: "Terlalu banyak request. Coba lagi sebentar." }, { status: 429 });
   }
 
   if (!(await isAdminAuthenticated())) {
-    return NextResponse.json({ message: "Sesi admin tidak valid." }, { status: 401 });
+    return jsonNoStore({ message: "Sesi admin tidak valid." }, { status: 401 });
   }
   if (!supabaseAdminClient) {
-    return NextResponse.json({ message: "Supabase admin belum dikonfigurasi." }, { status: 503 });
+    return jsonNoStore({ message: "Supabase admin belum dikonfigurasi." }, { status: 503 });
   }
 
   const body = await request.json().catch(() => null);
   const parsed = siteContentSchema.safeParse(body);
 
   if (!parsed.success) {
-    return NextResponse.json(
+    return jsonNoStore(
       {
         message: "Validasi gagal. Pastikan semua kolom penting telah terisi benar.",
         errors: parsed.error.flatten(),
@@ -99,10 +102,10 @@ export async function PUT(request: Request) {
     .single();
 
   if (error) {
-    return NextResponse.json({ message: "Gagal menyimpan ke Supabase." }, { status: 500 });
+    return jsonNoStore({ message: "Gagal menyimpan ke Supabase." }, { status: 500 });
   }
 
-  return NextResponse.json({
+  return jsonNoStore({
     message: "Konten landing page berhasil disimpan.",
     data: data.content,
   });

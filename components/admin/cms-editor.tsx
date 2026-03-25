@@ -309,9 +309,10 @@ export function CmsEditor({ initialContent }: CmsEditorProps) {
               <InputField
                 label="Google Form URL"
                 value={content.googleFormUrl}
-                onChange={(value) => updateField("googleFormUrl", value)}
+                onChange={() => undefined}
                 type="url"
-                helper="Semua tombol daftar akan mengarah ke link ini."
+                readOnly
+                helper="URL pendaftaran dikunci untuk keamanan branding. Ubah melalui deploy jika diperlukan."
               />
               <InputField
                 label="Periode harga normal"
