@@ -1,0 +1,224 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fff7ef;
+  --foreground: #0b1020;
+  --panel: #fffdf8;
+  --nav-height: 88px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-panel: var(--panel);
+  --color-brand-ink: #0b1020;
+  --color-brand-ink-soft: #18203a;
+  --color-brand-coral: #ff6b3d;
+  --color-brand-orange: #ff9a1f;
+  --color-brand-lime: #d0ff36;
+  --color-brand-sand: #fff7ef;
+  --color-brand-cream: #fffdf8;
+  --color-brand-peach: #ffe2c7;
+  --color-brand-stone: #5f6474;
+  --font-display: var(--font-space-grotesk);
+  --font-sans: var(--font-plus-jakarta);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(255, 154, 31, 0.12), transparent 24%),
+    radial-gradient(circle at right 10% top 16%, rgba(208, 255, 54, 0.16), transparent 20%),
+    linear-gradient(180deg, #fff7ef 0%, #fffaf4 40%, #fff7ef 100%);
+  color: var(--foreground);
+  font-family: var(--font-plus-jakarta), sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: rgba(255, 107, 61, 0.22);
+  color: #0b1020;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-space-grotesk), sans-serif;
+    letter-spacing: -0.04em;
+  }
+}
+
+.section-anchor {
+  scroll-margin-top: calc(var(--nav-height) + 28px);
+}
+
+.section-shell {
+  width: min(1200px, calc(100% - 1.5rem));
+  margin-inline: auto;
+}
+
+.surface-outline {
+  border: 1px solid rgba(11, 16, 32, 0.1);
+  box-shadow: 0 24px 48px rgba(11, 16, 32, 0.08);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+  gap: 2rem;
+}
+
+.hero-glow {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(208, 255, 54, 0.18), transparent 22%),
+    radial-gradient(circle at 78% 14%, rgba(255, 107, 61, 0.25), transparent 24%),
+    radial-gradient(circle at 50% 92%, rgba(255, 154, 31, 0.16), transparent 28%),
+    linear-gradient(140deg, #090d18 0%, #14121f 45%, #1b2c31 100%);
+}
+
+.hero-track::before,
+.hero-track::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.hero-track::before {
+  inset: 10%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hero-track::after {
+  inset: 18%;
+  border: 18px solid rgba(255, 255, 255, 0.06);
+}
+
+.hero-orbit {
+  animation: float 7s ease-in-out infinite;
+}
+
+.glow-chip {
+  box-shadow: 0 16px 28px rgba(255, 107, 61, 0.16);
+}
+
+.soft-ring {
+  position: relative;
+}
+
+.soft-ring::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.04));
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.card-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.card-sheen::after {
+  content: "";
+  position: absolute;
+  inset: -120% auto auto -40%;
+  width: 40%;
+  height: 280%;
+  transform: rotate(18deg);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.18) 45%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  pointer-events: none;
+  transition: transform 400ms ease;
+}
+
+.card-sheen:hover::after {
+  transform: translateX(340%) rotate(18deg);
+}
+
+.soft-noise {
+  position: relative;
+}
+
+.soft-noise::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.22;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@media (max-width: 960px) {
+  :root {
+    --nav-height: 126px;
+  }
+
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    padding-bottom: 96px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

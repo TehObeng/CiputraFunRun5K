@@ -1,0 +1,124 @@
+import type { SiteContent } from "@/lib/site-schema";
+
+const GOOGLE_FORM_PLACEHOLDER = "https://forms.gle/REPLACE_ME";
+
+export function getDefaultSiteContent(): SiteContent {
+  return {
+    eventName: "Fun Run",
+    badgeText: "Slot terbatas • Festival vibes • Harga normal 4–22 Mei 2026",
+    heroHeadline:
+      "Mulai pagi dengan lari seru, beat DJ, dan vibe komunitas yang bikin nagih.",
+    heroSubheadline:
+      "Fun Run menghadirkan pengalaman olahraga yang aktif, fun, dan social. Datang untuk lari, lanjut menikmati DJ, treasure hunt, dan peluang membawa pulang doorprize.",
+    heroCtaText: "Daftar Sekarang",
+    heroSecondaryCtaText: "Lihat Harga",
+    aboutTitle: "Event lari yang terasa hidup dari start sampai closing.",
+    aboutDescription:
+      "Bukan sekadar mengejar garis finish. Fun Run dirancang untuk menghadirkan momen yang lebih hangat, lebih seru, dan lebih mudah dinikmati bersama teman, keluarga, maupun komunitas.",
+    normalPricePeriod: "4–22 Mei 2026",
+    googleFormUrl: process.env.GOOGLE_FORM_URL ?? GOOGLE_FORM_PLACEHOLDER,
+    activities: [
+      {
+        title: "Lari",
+        description:
+          "Rasakan start yang penuh energi lewat fun run yang ringan, seru, dan nyaman dinikmati bersama.",
+      },
+      {
+        title: "DJ",
+        description:
+          "Suasana tetap hidup dengan set DJ yang menjaga mood event tetap naik dari awal sampai akhir.",
+      },
+      {
+        title: "Treasure Hunt",
+        description:
+          "Bukan cuma lari. Ada tantangan tambahan yang bikin pengalaman terasa lebih playful dan memorable.",
+      },
+      {
+        title: "Undian Doorprize",
+        description:
+          "Tutup event dengan antusiasme tinggi lewat undian doorprize yang bikin semua peserta tetap excited.",
+      },
+    ],
+    pricing: [
+      {
+        name: "Early Bird",
+        price: 150000,
+        description: "Pilihan terbaik untuk pendaftar tercepat yang ingin mengunci slot lebih awal.",
+        featured: false,
+      },
+      {
+        name: "Group/Komunitas",
+        price: 150000,
+        description: "Ajak teman atau komunitasmu dan hadir dengan energi yang lebih ramai.",
+        featured: true,
+      },
+      {
+        name: "Normal",
+        price: 200000,
+        description: "Tetap nyaman untuk kamu yang baru siap daftar mendekati hari pelaksanaan.",
+        featured: false,
+      },
+    ],
+    registrationSteps: [
+      {
+        title: "Klik tombol daftar",
+        description: "Gunakan tombol CTA di halaman ini untuk membuka Google Form pendaftaran.",
+      },
+      {
+        title: "Isi Google Form",
+        description: "Lengkapi data yang diminta secara singkat, jelas, dan sesuai kebutuhan panitia.",
+      },
+      {
+        title: "Selesaikan proses",
+        description: "Ikuti instruksi lanjutan yang diberikan setelah formulir berhasil dikirim.",
+      },
+    ],
+    faq: [
+      {
+        question: "Cara daftar bagaimana?",
+        answer:
+          "Klik tombol Daftar Sekarang, isi Google Form, lalu ikuti instruksi berikutnya dari panitia hingga proses pendaftaran selesai.",
+      },
+      {
+        question: "Pembayaran bagaimana?",
+        answer:
+          "Detail pembayaran dapat disampaikan setelah kamu mengisi Google Form, sehingga alur registrasi tetap sederhana dan cepat.",
+      },
+      {
+        question: "Apakah bisa daftar komunitas?",
+        answer:
+          "Bisa. Tersedia harga Group/Komunitas sebesar Rp150.000 untuk pendaftaran bersama.",
+      },
+      {
+        question: "Apa saja kegiatan di acara?",
+        answer:
+          "Kegiatannya mencakup lari, DJ, treasure hunt, dan undian doorprize dalam satu pengalaman event yang energik.",
+      },
+      {
+        question: "Sampai kapan harga normal berlaku?",
+        answer: "Harga normal Rp200.000 berlaku pada periode 4–22 Mei 2026.",
+      },
+    ],
+    closingHeadline: "Amankan slotmu sekarang sebelum gelombang berikutnya naik.",
+    closingDescription:
+      "Daftar lewat Google Form, ajak temanmu, dan rasakan event lari yang terasa lebih hidup, lebih fun, dan lebih community-driven.",
+    closingCtaText: "Isi Form Pendaftaran",
+    footerText:
+      "Fun Run adalah event lari dengan festival vibe yang dirancang untuk mendorong lebih banyak orang bergerak, terhubung, dan menikmati pengalaman yang seru bersama.",
+    contactLabel: "Kontak & info",
+    contactValue: "Instagram @funrun.official",
+    socials: [
+      {
+        label: "Instagram",
+        url: "https://instagram.com/REPLACE_ME",
+      },
+      {
+        label: "TikTok",
+        url: "https://tiktok.com/@REPLACE_ME",
+      },
+    ],
+  };
+}
+
+export { GOOGLE_FORM_PLACEHOLDER };
+
