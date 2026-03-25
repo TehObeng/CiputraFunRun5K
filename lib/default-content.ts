@@ -1,6 +1,6 @@
 import type { SiteContent } from "@/lib/site-schema";
 
-const GOOGLE_FORM_PLACEHOLDER = "https://forms.gle/REPLACE_ME";
+const GOOGLE_FORM_PLACEHOLDER = "https://forms.gle/tEz7uZ2i6y5Gfsbv8";
 
 export function getDefaultSiteContent(): SiteContent {
   return {
@@ -16,7 +16,7 @@ export function getDefaultSiteContent(): SiteContent {
     aboutDescription:
       "Bukan sekadar mengejar garis finish. Fun Run dirancang untuk menghadirkan momen yang lebih hangat, lebih seru, dan lebih mudah dinikmati bersama teman, keluarga, maupun komunitas.",
     normalPricePeriod: "4–22 Mei 2026",
-    googleFormUrl: process.env.GOOGLE_FORM_URL ?? GOOGLE_FORM_PLACEHOLDER,
+    googleFormUrl: GOOGLE_FORM_PLACEHOLDER,
     activities: [
       {
         title: "Lari",
