@@ -11,9 +11,9 @@ function getAllowedOrigins(request: Request) {
     // no-op
   }
 
-  if (env.SITE_URL) {
+  if (env.siteUrl) {
     try {
-      origins.add(new URL(env.SITE_URL).origin);
+      origins.add(new URL(env.siteUrl).origin);
     } catch {
       // no-op
     }
