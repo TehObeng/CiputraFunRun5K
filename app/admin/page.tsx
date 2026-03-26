@@ -1,26 +1,19 @@
 import type { Metadata } from "next";
 
 import { CmsEditor } from "@/components/admin/cms-editor";
-import { LoginPanel } from "@/components/admin/login-panel";
-import { isAdminAuthenticated } from "@/lib/admin-auth";
-import { getSiteContent } from "@/lib/site-content";
+import { requireAdminPage } from "@/lib/admin-session";
+import { getLandingPageContent } from "@/lib/site-content";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "CMS Admin",
-  description: "Panel admin sederhana untuk mengelola landing page Fun Run.",
+  title: "Admin CMS",
+  description: "Panel admin Supabase untuk mengelola landing page Citraland Fun Run 5K Batam.",
 };
 
 export default async function AdminPage() {
-  const authenticated = await isAdminAuthenticated();
+  const admin = await requireAdminPage();
+  const content = await getLandingPageContent();
 
-  if (!authenticated) {
-    return <LoginPanel />;
-  }
-
-  const content = await getSiteContent();
-
-  return <CmsEditor initialContent={content} />;
+  return <CmsEditor initialContent={content} adminEmail={admin.email ?? admin.adminUser.email} />;
 }
-

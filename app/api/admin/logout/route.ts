@@ -1,12 +1,13 @@
-import { clearAdminSession } from "@/lib/admin-auth";
-import { hasValidSameOrigin, jsonNoStore } from "@/lib/http-security";
+import { NextResponse } from "next/server";
 
-export async function POST(request: Request) {
-  if (!hasValidSameOrigin(request)) {
-    return jsonNoStore({ message: "Origin request tidak valid." }, { status: 403 });
+import { hasSupabaseConfig } from "@/lib/env";
+import { createServerSupabaseClient } from "@/lib/supabase";
+
+export async function POST() {
+  if (hasSupabaseConfig()) {
+    const supabase = await createServerSupabaseClient();
+    await supabase.auth.signOut();
   }
 
-  await clearAdminSession();
-
-  return jsonNoStore({ message: "Logout berhasil." });
+  return NextResponse.json({ message: "Logout berhasil." });
 }

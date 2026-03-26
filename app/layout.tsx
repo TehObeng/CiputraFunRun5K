@@ -18,15 +18,15 @@ const bodyFont = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
-    default: "Fun Run",
-    template: "%s | Fun Run",
+    default: "Citraland Fun Run 5K Batam",
+    template: "%s | Citraland Fun Run 5K Batam",
   },
-  description: "Landing page Fun Run modern dengan CTA Google Form dan CMS sederhana.",
-  applicationName: "Fun Run",
+  description: "Citraland Fun Run 5K Batam landing page with Supabase-powered CMS, pricing, timeline, and registration flow.",
+  applicationName: "Citraland Fun Run 5K Batam",
   openGraph: {
     type: "website",
     locale: "id_ID",
-    siteName: "Fun Run",
+    siteName: "Citraland Fun Run 5K Batam",
   },
   twitter: {
     card: "summary_large_image",
@@ -56,4 +56,3 @@ export default function RootLayout({
     </html>
   );
 }
-

@@ -1,3 +1,5 @@
+import { env } from "@/lib/env";
+
 export function cn(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
@@ -11,16 +13,39 @@ export function formatRupiah(value: number) {
 }
 
 export function getSiteUrl() {
-  const siteUrl = process.env.SITE_URL?.trim();
+  return env.siteUrl;
+}
 
-  if (!siteUrl) {
-    return "http://localhost:3000";
-  }
-
+export function isAbsoluteUrl(value: string) {
   try {
-    return new URL(siteUrl).toString().replace(/\/$/, "");
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
   } catch {
-    return "http://localhost:3000";
+    return false;
   }
 }
 
+export function toAbsoluteUrl(value: string) {
+  if (isAbsoluteUrl(value)) {
+    return value;
+  }
+
+  if (value.startsWith("/")) {
+    return `${getSiteUrl()}${value}`;
+  }
+
+  return `${getSiteUrl()}/${value}`;
+}
+
+export function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+export function getFileExtension(filename: string) {
+  const segments = filename.split(".");
+  return segments.length > 1 ? segments[segments.length - 1].toLowerCase() : "";
+}

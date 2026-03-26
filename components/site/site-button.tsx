@@ -29,11 +29,11 @@ export function SiteButton({
       className={cn(
         "inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-coral",
         variant === "primary" &&
-          "bg-brand-coral text-white shadow-[0_18px_35px_rgba(255,107,61,0.28)] hover:-translate-y-0.5 hover:bg-brand-orange",
+          "bg-brand-orange text-brand-night shadow-[0_18px_35px_rgba(255,154,31,0.28)] hover:-translate-y-0.5 hover:bg-[#ffb14a]",
         variant === "secondary" &&
           "border border-white/16 bg-white/10 text-white hover:border-white/28 hover:bg-white/14",
         variant === "ghost" &&
-          "border border-brand-ink/12 bg-white text-brand-ink hover:-translate-y-0.5 hover:border-brand-ink/20 hover:bg-brand-peach/35",
+          "border border-brand-line bg-brand-paper text-brand-night hover:-translate-y-0.5 hover:border-brand-orange hover:bg-brand-wash",
         className,
       )}
     >

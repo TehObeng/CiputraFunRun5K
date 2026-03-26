@@ -1,70 +1,58 @@
+import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { createAdminSession, isAdminAuthConfigured, verifyAdminCredentials } from "@/lib/admin-auth";
-import { hasValidSameOrigin, jsonNoStore } from "@/lib/http-security";
+import { hasSupabaseConfig } from "@/lib/env";
+import { adminUserSchema } from "@/lib/site-schema";
+import { createServerSupabaseClient } from "@/lib/supabase";
 
 const loginSchema = z.object({
-  username: z.string().trim().min(1, "Username wajib diisi."),
+  email: z.string().trim().email("Masukkan email admin yang valid."),
   password: z.string().trim().min(1, "Password wajib diisi."),
 });
 
-const RATE_LIMIT_WINDOW_MS = 60_000;
-const RATE_LIMIT_MAX = 10;
-const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
-
-function getClientIp(request: Request) {
-  return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-}
-
-function isRateLimited(request: Request) {
-  const ip = getClientIp(request);
-  const now = Date.now();
-  const current = rateLimitStore.get(ip);
-
-  if (!current || current.resetAt < now) {
-    rateLimitStore.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return false;
-  }
-
-  if (current.count >= RATE_LIMIT_MAX) {
-    return true;
-  }
-
-  current.count += 1;
-  rateLimitStore.set(ip, current);
-  return false;
-}
-
 export async function POST(request: Request) {
-  if (!hasValidSameOrigin(request)) {
-    return jsonNoStore({ message: "Origin request tidak valid." }, { status: 403 });
-  }
-
-  if (!isAdminAuthConfigured()) {
-    return jsonNoStore(
-      { message: "Admin auth belum dikonfigurasi. Set ADMIN_USERNAME, ADMIN_PASSWORD, dan CMS_SESSION_SECRET." },
+  if (!hasSupabaseConfig()) {
+    return NextResponse.json(
+      { message: "Supabase auth belum dikonfigurasi. Lengkapi environment variable terlebih dahulu." },
       { status: 503 },
     );
-  }
-
-  if (isRateLimited(request)) {
-    return jsonNoStore({ message: "Terlalu banyak percobaan login." }, { status: 429 });
   }
 
   const body = await request.json().catch(() => null);
   const parsed = loginSchema.safeParse(body);
 
   if (!parsed.success) {
-    return jsonNoStore({ message: "Username dan password wajib diisi." }, { status: 400 });
+    return NextResponse.json({ message: "Email dan password wajib diisi dengan format yang benar." }, { status: 400 });
   }
 
-  const isValid = await verifyAdminCredentials(parsed.data.username, parsed.data.password);
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: parsed.data.email,
+    password: parsed.data.password,
+  });
 
-  if (!isValid) {
-    return jsonNoStore({ message: "Login gagal. Periksa kembali username dan password." }, { status: 401 });
+  if (error || !data.user) {
+    return NextResponse.json({ message: "Login gagal. Periksa kembali email dan password admin." }, { status: 401 });
   }
 
-  await createAdminSession();
+  const { data: adminData, error: adminError } = await supabase
+    .from("admin_users")
+    .select("user_id, email, role, status, created_at, updated_at")
+    .eq("user_id", data.user.id)
+    .maybeSingle();
 
-  return jsonNoStore({ message: "Login berhasil." });
+  const parsedAdmin = adminUserSchema.safeParse(adminData);
+
+  if (adminError || !parsedAdmin.success || parsedAdmin.data.status !== "active") {
+    await supabase.auth.signOut();
+    return NextResponse.json(
+      { message: "Akun ini berhasil login, tetapi belum diberi akses admin aktif." },
+      { status: 403 },
+    );
+  }
+
+  return NextResponse.json({
+    message: "Login admin berhasil.",
+    email: parsedAdmin.data.email,
+  });
 }
