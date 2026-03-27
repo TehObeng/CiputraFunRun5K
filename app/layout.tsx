@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     default: "Citraland Fun Run 5K Batam",
     template: "%s | Citraland Fun Run 5K Batam",
   },
-  description: "Citraland Fun Run 5K Batam landing page with Supabase-powered CMS, pricing, timeline, and registration flow.",
+  description: "Official bilingual microsite for CitraLand Megah Treasure Hunt Fun Run 5K, including event details and sponsorship pages.",
   applicationName: "Citraland Fun Run 5K Batam",
   openGraph: {
     type: "website",
@@ -46,7 +46,7 @@ export default function RootLayout({
     <html lang="id" className={`${displayFont.variable} ${bodyFont.variable} h-full antialiased`}>
       <body className="min-h-full">
         <a
-          href="#beranda"
+          href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-brand-ink focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
         >
           Lewati ke konten utama
