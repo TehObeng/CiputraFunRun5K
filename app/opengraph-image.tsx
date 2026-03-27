@@ -108,7 +108,6 @@ export default async function OpenGraphImage() {
                 padding: "18px",
               }}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={content.brand.logo.publicUrl} alt={content.brand.logo.alt} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
             </div>
             <div style={{ fontSize: "28px", lineHeight: 1.25, fontWeight: 700 }}>{content.hero.supportingTitle}</div>
