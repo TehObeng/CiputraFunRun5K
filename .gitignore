@@ -11,3 +11,5 @@ pnpm-debug.log*
 .next-*.log
 coverage/
 dist/
+public/uploads/*
+!public/uploads/.gitkeep

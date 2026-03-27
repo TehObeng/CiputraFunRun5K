@@ -1,9 +1,17 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { hasSupabaseConfig } from "@/lib/env";
-import { adminUserSchema } from "@/lib/site-schema";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { verifyPassword } from "@/lib/auth-security";
+import {
+  attachAdminSessionCookie,
+  createAdminSession,
+  getCurrentAdminSessionToken,
+  revokeAdminSession,
+} from "@/lib/admin-session";
+import { recordAuditLog } from "@/lib/audit-log";
+import { hasAdminAuthConfig } from "@/lib/env";
+import { hasValidSameOrigin, jsonNoStore } from "@/lib/http-security";
+import { getPrisma } from "@/lib/prisma";
 
 const loginSchema = z.object({
   email: z.string().trim().email("Masukkan email admin yang valid."),
@@ -11,48 +19,64 @@ const loginSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  if (!hasSupabaseConfig()) {
-    return NextResponse.json(
-      { message: "Supabase auth belum dikonfigurasi. Lengkapi environment variable terlebih dahulu." },
+  if (!hasAdminAuthConfig()) {
+    return jsonNoStore(
+      { message: "PostgreSQL atau ADMIN_SESSION_SECRET belum dikonfigurasi. Lengkapi environment terlebih dahulu." },
       { status: 503 },
     );
+  }
+
+  if (!hasValidSameOrigin(request)) {
+    return jsonNoStore({ message: "Origin request tidak diizinkan." }, { status: 403 });
   }
 
   const body = await request.json().catch(() => null);
   const parsed = loginSchema.safeParse(body);
 
   if (!parsed.success) {
-    return NextResponse.json({ message: "Email dan password wajib diisi dengan format yang benar." }, { status: 400 });
+    return jsonNoStore({ message: "Email dan password wajib diisi dengan format yang benar." }, { status: 400 });
   }
 
-  const supabase = await createServerSupabaseClient();
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: parsed.data.email,
-    password: parsed.data.password,
-  });
+  try {
+    const prisma = getPrisma();
+    const email = parsed.data.email.toLowerCase();
+    const adminUser = await prisma.adminUser.findUnique({
+      where: { email },
+    });
 
-  if (error || !data.user) {
-    return NextResponse.json({ message: "Login gagal. Periksa kembali email dan password admin." }, { status: 401 });
+    if (!adminUser || !(await verifyPassword(parsed.data.password, adminUser.passwordHash))) {
+      return jsonNoStore({ message: "Login gagal. Periksa kembali email dan password admin." }, { status: 401 });
+    }
+
+    if (adminUser.role !== "ADMIN" || adminUser.status !== "ACTIVE") {
+      return jsonNoStore({ message: "Akun ini berhasil login, tetapi belum diberi akses admin aktif." }, { status: 403 });
+    }
+
+    await revokeAdminSession(await getCurrentAdminSessionToken());
+
+    const session = await createAdminSession(adminUser.id, request);
+
+    await recordAuditLog(prisma, {
+      adminUserId: adminUser.id,
+      action: "admin_session.login",
+      entityType: "admin_session",
+      entityId: session.sessionId,
+      metadata: {
+        email: adminUser.email,
+      },
+      ipAddress: session.requestInfo.ipAddress,
+      userAgent: session.requestInfo.userAgent,
+    });
+
+    const response = NextResponse.json({
+      message: "Login admin berhasil.",
+      email: adminUser.email,
+    });
+
+    attachAdminSessionCookie(response, session.token, session.expiresAt);
+
+    return response;
+  } catch {
+    return jsonNoStore({ message: "Login admin gagal karena koneksi database bermasalah." }, { status: 503 });
   }
-
-  const { data: adminData, error: adminError } = await supabase
-    .from("admin_users")
-    .select("user_id, email, role, status, created_at, updated_at")
-    .eq("user_id", data.user.id)
-    .maybeSingle();
-
-  const parsedAdmin = adminUserSchema.safeParse(adminData);
-
-  if (adminError || !parsedAdmin.success || parsedAdmin.data.status !== "active") {
-    await supabase.auth.signOut();
-    return NextResponse.json(
-      { message: "Akun ini berhasil login, tetapi belum diberi akses admin aktif." },
-      { status: 403 },
-    );
-  }
-
-  return NextResponse.json({
-    message: "Login admin berhasil.",
-    email: parsedAdmin.data.email,
-  });
 }

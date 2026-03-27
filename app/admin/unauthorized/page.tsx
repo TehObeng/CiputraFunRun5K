@@ -4,8 +4,6 @@ import { redirect } from "next/navigation";
 
 import { getAdminAuthState } from "@/lib/admin-session";
 
-export const dynamic = "force-dynamic";
-
 export const metadata: Metadata = {
   title: "Unauthorized",
   description: "Halaman ini memberi tahu bahwa akun saat ini belum punya akses admin aktif.",
@@ -32,8 +30,7 @@ export default async function AdminUnauthorizedPage() {
         <p className="text-sm font-semibold uppercase tracking-[0.24em] text-brand-lime">Access required</p>
         <h1 className="text-3xl font-bold md:text-4xl">Akun ini sudah login, tetapi belum punya hak admin aktif.</h1>
         <p className="text-base leading-8 text-white/74">
-          Pastikan email ini sudah dimasukkan ke tabel admin di Supabase dan statusnya masih aktif sebelum mencoba
-          membuka CMS.
+          Pastikan email ini sudah terdaftar sebagai admin aktif di database sebelum mencoba membuka CMS lagi.
         </p>
         <div className="flex flex-wrap gap-3">
           <Link

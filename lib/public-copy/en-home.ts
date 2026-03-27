@@ -2,13 +2,13 @@ export const enHome = {
   meta: {
     title: "Home",
     description:
-      "Official bilingual website for CitraLand Megah Treasure Hunt Fun Run 5K, featuring event details, participant experience, and sponsorship information in Indonesian and English.",
+      "Official website for CitraLand Megah Treasure Hunt Fun Run 5K, featuring event highlights, race-day details, and sponsorship opportunities in Indonesian and English.",
   },
   hero: {
-    eyebrow: "Treasure Hunt Fun Run 5K · May 24, 2026",
-    title: "An event microsite that combines a 5K run, a treasure hunt, and a stronger brand stage.",
+    eyebrow: "Treasure Hunt Fun Run 5K - May 24, 2026",
+    title: "A sharper 5K morning experience for Batam's active community.",
     description:
-      "The sponsorship deck has been reworked into a cleaner web experience that feels clearer for participants, stronger for sponsors, and easier for the team to present.",
+      "Join a community-friendly 5K route, then stay for treasure hunt moments, live entertainment, and partner activations that keep the venue active after the run.",
     announcement: "Targeting 500+ participants, 650+ total visitors, and at least 100,000 social media impressions.",
     primaryLabel: "Register Now",
     secondaryLabel: "Explore Sponsorship",
@@ -17,34 +17,34 @@ export const enHome = {
     {
       label: "Participant target",
       value: "500+",
-      note: "Runners and casual walkers from active communities across Batam.",
+      note: "Runners, joggers, and casual walkers from active communities across Batam.",
     },
     {
       label: "Estimated visitors",
       value: "650+",
-      note: "Including spectators, families, supporters, and brand partners.",
+      note: "Including families, supporters, communities, and partner brands around the event zone.",
     },
     {
       label: "Digital reach",
       value: "100K+",
-      note: "Projected impressions from pre-event, live-event, and post-event content.",
+      note: "Powered by pre-event campaigns, live-day content, and post-event social coverage.",
     },
   ],
   detailCards: [
     {
       label: "Date",
       value: "May 24, 2026",
-      note: "A Sunday morning program from opening activation through closing.",
+      note: "A Sunday morning program with a clear flow from opening activation through closing.",
     },
     {
       label: "Time",
       value: "05:00 - 09:00 WIB",
-      note: "Four hours of core programming, entertainment, and sponsor activation.",
+      note: "Four hours of core programming, entertainment, partner activation, and treasure hunt moments.",
     },
     {
       label: "Venue",
       value: "Emerald Hills, CitraLand Megah Batam",
-      note: "The event starts and finishes inside the CitraLand Megah Batam area.",
+      note: "The start and finish areas sit inside the CitraLand Megah Batam district.",
     },
     {
       label: "Distance",
@@ -54,29 +54,29 @@ export const enHome = {
   ],
   overview: {
     eyebrow: "Overview",
-    title: "Building meaningful impact with entrepreneurial and professional communities through a healthy, social, and shareable event.",
+    title: "A morning event designed to feel healthy, social, and easy to enjoy together.",
     description:
-      "This fun run is designed to spark real connections, encourage healthier routines, and open visible collaboration opportunities for partner brands.",
+      "This fun run combines active lifestyle energy, community atmosphere, and partner collaboration in a format that feels clear for both participants and brands.",
   },
   highlights: [
     {
-      title: "Instagrammable moments across the route",
-      description: "Every kilometer is designed to create photo-friendly moments that encourage organic participant sharing.",
+      title: "Visual moments across the route",
+      description: "Each kilometer is designed with photo-friendly moments that keep the experience shareable and memorable.",
     },
     {
-      title: "Open to every fitness level",
-      description: "This is not a high-pressure competitive race, so walkers, joggers, and community runners can join together comfortably.",
+      title: "Open to every level",
+      description: "The format is welcoming rather than exclusive, so walkers, joggers, and community runners can join comfortably.",
     },
     {
-      title: "The experience continues after the finish",
-      description: "Treasure hunt activities, music, food booths, door prizes, and partner activations keep the event alive beyond the run itself.",
+      title: "The experience stays active after the finish",
+      description: "Treasure hunt activity, music, food stalls, door prizes, and partner activation keep the crowd engaged beyond the run.",
     },
   ],
   sponsorValue: {
     eyebrow: "Sponsor value",
     title: "Brand exposure is built before, during, and after race day.",
     description:
-      "Sponsors are not limited to the event field. Their presence can extend into social campaigns, promotional materials, start-finish activations, and direct community interaction.",
+      "Partners are visible beyond the event field through promotional material, social campaigns, start-finish activations, and direct community interaction.",
     bullets: [
       "Professional chip timing, exclusive merchandise, and finisher medals raise the perceived quality of the event.",
       "The local Batam community forms the core audience, with profiles that are active, social, and family-friendly.",
@@ -85,9 +85,9 @@ export const enHome = {
   },
   nextSteps: {
     eyebrow: "Explore further",
-    title: "Open the event operations page or jump straight into the sponsorship packages.",
+    title: "Open the event operations page or review the partnership opportunities.",
     description:
-      "The next pages split the original deck into two cleaner journeys: one for the event experience, one for sponsor decision-making.",
+      "The next two pages help you choose the path that fits you best: participant-focused event details or sponsor-facing collaboration value.",
     eventLabel: "View Event Details",
     sponsorshipLabel: "Open Sponsor Packages",
   },

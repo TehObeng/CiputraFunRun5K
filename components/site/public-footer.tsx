@@ -14,11 +14,11 @@ type PublicFooterProps = {
 
 export function PublicFooter({ copy, logo, brandName, brandStrapline, contactValue, socials }: PublicFooterProps) {
   return (
-    <footer className="border-t border-brand-line bg-brand-paper">
-      <div className="mx-auto grid w-[min(1200px,calc(100%-1.5rem))] gap-10 py-10 md:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)] md:py-14">
+    <footer className="section-divider bg-brand-paper">
+      <div className="page-shell grid gap-10 py-10 md:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)] md:py-14">
         <div className="space-y-5">
           <div className="flex items-start gap-4">
-            <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-3xl border border-brand-line bg-white p-2 shadow-[0_14px_28px_rgba(11,22,40,0.06)]">
+            <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-3xl border border-brand-line bg-white p-2 shadow-[0_12px_26px_rgba(11,22,40,0.06)]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={logo.publicUrl} alt={logo.alt} className="h-full w-full object-contain" />
             </div>

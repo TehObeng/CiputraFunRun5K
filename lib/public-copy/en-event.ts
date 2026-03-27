@@ -6,18 +6,18 @@ export const enEvent = {
   },
   intro: {
     eyebrow: "Event details",
-    title: "A 5K route built to feel organized, social, and easy to sell as an experience.",
+    title: "A 5K route built to feel organized, social, and genuinely fun to join.",
     description:
-      "The event slides from the presentation are reorganized into clearer blocks for route highlights, support points, race-day flow, and participant value.",
+      "This page gathers the race-day essentials in one place: route highlights, support points, event flow, post-run activation, and participant kit value.",
   },
   advantages: [
     {
-      title: "Photo moments that work for social sharing",
-      description: "Visual checkpoints along the route help participants create organic content that extends sponsor reach.",
+      title: "Photo moments that support social sharing",
+      description: "Visual checkpoints along the route help participants create organic content around the experience.",
     },
     {
       title: "Open to walkers, joggers, and community runners",
-      description: "The format feels inclusive rather than elite, making it easier to attract a broader participation base.",
+      description: "The format feels inclusive, making it easier for a broader mix of participants to join comfortably.",
     },
     {
       title: "A finish area that stays active",
@@ -28,7 +28,7 @@ export const enEvent = {
     eyebrow: "5K route",
     title: "The course starts and finishes at CitraLand Megah Batam, with hydration points at key kilometers.",
     description:
-      "The route from the PPT is preserved as a city-facing journey that is easy to explain to both participants and sponsor teams evaluating visibility.",
+      "The route is designed to stay easy for participants to understand, simple for organizers to brief, and clear for partners reviewing course visibility.",
     checkpoints: [
       "CitraLand Megah Batam",
       "Masjid Raya Batam",
@@ -46,7 +46,7 @@ export const enEvent = {
     eyebrow: "Rundown & activation",
     title: "Four hours of event flow, from opening gate to closing program.",
     description:
-      "The operating timeline is intentionally compressed into an easy scanning format for sponsors, organizers, and participants.",
+      "The operating timeline is intentionally concise so sponsors, organizers, and participants can understand the key moments quickly.",
     items: [
       {
         time: "05:00 WIB",
@@ -73,11 +73,11 @@ export const enEvent = {
   afterRun: {
     eyebrow: "Post-run activation",
     title: "The finish area is designed to keep crowd energy high.",
-    description: "This matters for sponsors because the strongest onsite interaction often happens after participants complete the run.",
+    description: "This matters because the strongest onsite interaction often happens after participants complete the run.",
     items: [
       {
         title: "DJ and live music",
-        description: "High-energy sound keeps the event atmosphere alive after the finish line.",
+        description: "High-energy sound keeps the atmosphere alive after the finish line.",
       },
       {
         title: "Photo booth zone",
@@ -95,9 +95,9 @@ export const enEvent = {
   },
   participantKit: {
     eyebrow: "Participant kit",
-    title: "Event assets that make the experience feel premium from registration onward.",
+    title: "Event essentials that make the experience feel premium from registration onward.",
     description:
-      "The PPT references jerseys, medals, lanyards, BIBs, chip timing, and goodie bags. On the site, these become a clearer participant value stack.",
+      "Jerseys, medals, lanyards, BIBs, timing chips, and goodie bags are presented as a clear participant value set from the start.",
     items: [
       "CitraLand Fun Run jersey",
       "Finisher medal and lanyard",

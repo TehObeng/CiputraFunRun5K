@@ -6,13 +6,13 @@ export const enSponsorship = {
   },
   intro: {
     eyebrow: "Sponsorship",
-    title: "A partner-facing page that turns the sponsorship deck into a faster digital sales argument.",
+    title: "A partner opportunity designed to make brand value visible and easy to evaluate.",
     description:
-      "Audience data, reach estimates, package structures, and planning milestones are arranged so prospective partners can evaluate the opportunity quickly.",
+      "Audience data, reach estimates, package structures, and planning milestones are arranged so prospective partners can review the opportunity quickly.",
   },
   demographics: {
     eyebrow: "Audience & demographics",
-    title: "An audience that is socially active, health-oriented, and grounded in Batam’s local community.",
+    title: "An audience that is socially active, health-oriented, and grounded in Batam's local community.",
     description:
       "Most participants are expected to come from Batam, fall within productive age groups, and actively share experiences on social media.",
     ageGroups: ["18-25: 40%", "26-35: 35%", "36-45: 25%"],
@@ -34,7 +34,7 @@ export const enSponsorship = {
     eyebrow: "Brand exposure",
     title: "Brand visibility is built across phases, not limited to race day.",
     description:
-      "The presentation outlines three primary exposure phases: pre-event, event day, and post-event, supported by local community networks and media collaboration.",
+      "Exposure is structured through pre-event, event-day, and post-event phases, then reinforced through local community networks and media collaboration.",
     phases: [
       {
         label: "Pre-event (8 weeks)",
@@ -58,9 +58,9 @@ export const enSponsorship = {
   },
   packages: {
     eyebrow: "Sponsorship packages",
-    title: "Three core tiers and one in-kind path for more flexible collaboration.",
+    title: "Three core tiers and one in-kind path for flexible collaboration.",
     description:
-      "The package structure follows the deck: from category exclusivity to strong brand visibility at a lighter investment level.",
+      "Each package combines visibility, activation, and interaction space at a level that fits different partner goals.",
     tiers: [
       {
         name: "Platinum",
@@ -115,14 +115,14 @@ export const enSponsorship = {
     ],
     inKind: {
       title: "In-Kind Sponsor",
-      description: "Support in water, food, equipment, services, prizes, or other goods and services is also open for custom collaboration.",
+      description: "Support in water, food, equipment, services, prizes, or other goods and services is also open as a custom collaboration path.",
     },
   },
   benefits: {
     eyebrow: "Partner benefits",
     title: "Each sponsor tier combines visibility, activation, and engagement value.",
     description:
-      "These benefit groups condense the partner slides into a structure that is faster for brand managers and marketing teams to evaluate.",
+      "These benefit groups help brand managers and marketing teams assess the collaboration value quickly and clearly.",
     groups: [
       {
         title: "Brand visibility",
@@ -153,9 +153,9 @@ export const enSponsorship = {
   },
   timeline: {
     eyebrow: "Planning flow",
-    title: "A week-by-week preparation roadmap that shows sponsors when visibility starts working.",
+    title: "A week-by-week preparation roadmap that shows sponsors when visibility begins to work.",
     description:
-      "This timeline helps position the event as an execution-ready program rather than a creative idea without operational planning.",
+      "This timeline demonstrates a clear delivery path from early planning through live execution on event day.",
     phases: [
       {
         label: "Weeks 1-2",
@@ -178,7 +178,7 @@ export const enSponsorship = {
         points: ["Confirm vendors and suppliers", "Recruit and brief volunteers", "Finalize route and signage", "Prepare goodie bags and final reminders"],
       },
       {
-        label: "Event day · May 24, 2026",
+        label: "Event day - May 24, 2026",
         title: "Live execution",
         points: ["05:00 preparation and registration open", "05:30 opening ceremony and warm-up", "06:00 race start", "08:30 treasure hunt activation", "09:00 prize giving and closing"],
       },

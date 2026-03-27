@@ -49,20 +49,20 @@ export function PublicNavbar({ locale, brandEyebrow, brandName, logo, registerHr
     : getPageHref(alternateLocale, "home");
 
   return (
-    <header className="sticky top-0 z-50 border-b border-brand-line/70 bg-brand-surface/86 backdrop-blur-xl">
-      <div className="mx-auto flex w-[min(1200px,calc(100%-1.5rem))] items-center justify-between gap-4 py-4">
+    <header className="sticky top-0 z-50 border-b border-brand-line/70 bg-brand-surface/92 backdrop-blur-xl">
+      <div className="page-shell flex items-center justify-between gap-3 py-4 sm:gap-4">
         <Link href={getPageHref(locale, "home")} className="inline-flex min-w-0 items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border border-brand-line bg-white p-1.5 shadow-[0_14px_26px_rgba(11,22,40,0.06)]">
+          <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-2xl border border-brand-line bg-white p-1.5 shadow-[0_12px_24px_rgba(11,22,40,0.06)] sm:h-12 sm:w-12">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={logo.publicUrl} alt={logo.alt} className="h-full w-full object-contain" />
           </div>
           <div className="min-w-0">
             <p className="truncate text-[10px] font-semibold uppercase tracking-[0.26em] text-brand-orange">{brandEyebrow}</p>
-            <p className="truncate text-sm font-semibold text-brand-night md:text-base">{brandName}</p>
+            <p className="truncate text-sm font-semibold text-brand-night sm:text-base">{brandName}</p>
           </div>
         </Link>
 
-        <nav className="hidden items-center gap-2 rounded-full border border-brand-line bg-white/72 px-2 py-2 text-sm text-brand-night shadow-[0_16px_34px_rgba(11,22,40,0.06)] lg:flex">
+        <nav className="hidden items-center gap-2 rounded-full border border-brand-line bg-white/76 px-2 py-2 text-sm text-brand-night shadow-[0_12px_28px_rgba(11,22,40,0.06)] lg:flex">
           {navItems.map((item) => {
             const active = item.href === getPageHref(locale, "home") ? pathname === item.href : pathname.startsWith(item.href);
 
@@ -71,7 +71,7 @@ export function PublicNavbar({ locale, brandEyebrow, brandName, logo, registerHr
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "rounded-full px-4 py-2 font-semibold transition",
+                  "rounded-full px-4 py-2 font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   active ? "bg-brand-night text-white" : "hover:bg-brand-wash",
                 )}
               >
@@ -82,7 +82,7 @@ export function PublicNavbar({ locale, brandEyebrow, brandName, logo, registerHr
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <div className="rounded-full border border-brand-line bg-white/72 px-2 py-2 shadow-[0_16px_34px_rgba(11,22,40,0.06)]">
+          <div className="rounded-full border border-brand-line bg-white/76 px-2 py-2 shadow-[0_12px_28px_rgba(11,22,40,0.06)]">
             <div className="flex items-center gap-1">
               <span className="px-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-brand-muted">{labels.localeLabel}</span>
               <span
@@ -113,8 +113,9 @@ export function PublicNavbar({ locale, brandEyebrow, brandName, logo, registerHr
         <button
           type="button"
           onClick={() => setIsOpen((current) => !current)}
-          className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-brand-line bg-white text-brand-night shadow-[0_14px_26px_rgba(11,22,40,0.06)] lg:hidden"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-brand-line bg-white text-brand-night shadow-[0_12px_24px_rgba(11,22,40,0.06)] transition hover:bg-brand-wash lg:hidden"
           aria-expanded={isOpen}
+          aria-controls="public-nav-drawer"
           aria-label={isOpen ? "Close menu" : "Open menu"}
         >
           {isOpen ? <X className="size-5" /> : <Menu className="size-5" />}
@@ -122,8 +123,9 @@ export function PublicNavbar({ locale, brandEyebrow, brandName, logo, registerHr
       </div>
 
       <div
+        id="public-nav-drawer"
         className={cn(
-          "mx-auto w-[min(1200px,calc(100%-1.5rem))] overflow-hidden rounded-[28px] border border-brand-line bg-white shadow-[0_18px_42px_rgba(11,22,40,0.08)] transition-all duration-300 lg:hidden",
+          "page-shell overflow-hidden rounded-[28px] border border-brand-line bg-white shadow-[0_18px_42px_rgba(11,22,40,0.08)] transition-all duration-300 lg:hidden",
           isOpen ? "mb-4 max-h-[420px] opacity-100" : "pointer-events-none max-h-0 opacity-0",
         )}
       >
@@ -137,7 +139,7 @@ export function PublicNavbar({ locale, brandEyebrow, brandName, logo, registerHr
                 href={item.href}
                 onClick={() => setIsOpen(false)}
                 className={cn(
-                  "block rounded-2xl border px-4 py-3 text-sm font-semibold transition",
+                  "block rounded-2xl border px-4 py-3 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   active ? "border-brand-night bg-brand-night text-white" : "border-brand-line hover:bg-brand-wash",
                 )}
               >

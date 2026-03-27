@@ -1,17 +1,23 @@
+import { mkdir, writeFile } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
-
-import { NextResponse } from "next/server";
+import { relative, resolve } from "node:path";
 
 import { requireAdminApi } from "@/lib/admin-session";
+import { recordAuditLog } from "@/lib/audit-log";
+import { env } from "@/lib/env";
+import { jsonNoStore } from "@/lib/http-security";
+import { getPrisma } from "@/lib/prisma";
 import { getFileExtension, slugify } from "@/lib/utils";
-import { SITE_MEDIA_BUCKET } from "@/lib/supabase";
 
 const allowedMimeTypes = new Set(["image/png", "image/jpeg", "image/webp", "image/svg+xml"]);
-const uploadTargets = new Set(["brand.logo", "seo.ogImage"]);
+const uploadTargets = new Map([
+  ["brand.logo", ["brand", "logo"]],
+  ["seo.ogImage", ["seo", "og-image"]],
+]);
 const maxFileSizeBytes = 5 * 1024 * 1024;
 
 export async function POST(request: Request) {
-  const auth = await requireAdminApi();
+  const auth = await requireAdminApi(request);
 
   if (!auth.ok) {
     return auth.response;
@@ -21,44 +27,67 @@ export async function POST(request: Request) {
   const target = String(formData.get("target") ?? "");
   const alt = String(formData.get("alt") ?? "").trim();
   const file = formData.get("file");
+  const targetSegments = uploadTargets.get(target);
 
-  if (!uploadTargets.has(target)) {
-    return NextResponse.json({ message: "Target upload tidak dikenal." }, { status: 400 });
+  if (!targetSegments) {
+    return jsonNoStore({ message: "Target upload tidak dikenal." }, { status: 400 });
   }
 
   if (!(file instanceof File)) {
-    return NextResponse.json({ message: "File gambar wajib dipilih." }, { status: 400 });
+    return jsonNoStore({ message: "File gambar wajib dipilih." }, { status: 400 });
   }
 
   if (!allowedMimeTypes.has(file.type)) {
-    return NextResponse.json({ message: "Format gambar belum didukung." }, { status: 400 });
+    return jsonNoStore({ message: "Format gambar belum didukung." }, { status: 400 });
   }
 
   if (file.size > maxFileSizeBytes) {
-    return NextResponse.json({ message: "Ukuran gambar melebihi batas 5 MB." }, { status: 400 });
+    return jsonNoStore({ message: "Ukuran gambar melebihi batas 5 MB." }, { status: 400 });
+  }
+
+  const publicRoot = resolve(process.cwd(), "public");
+  const uploadRoot = resolve(env.uploadDir);
+
+  if (!uploadRoot.startsWith(publicRoot)) {
+    return jsonNoStore(
+      { message: "UPLOAD_DIR harus berada di dalam folder public agar aset dapat dilayani oleh Next.js." },
+      { status: 500 },
+    );
   }
 
   const extension = getFileExtension(file.name) || "png";
   const safeBaseName = slugify(file.name.replace(/\.[^.]+$/, "")) || "asset";
-  const uploadPath = `${target.replace(".", "/")}/${safeBaseName}-${randomUUID()}.${extension}`;
+  const filename = `${safeBaseName}-${randomUUID()}.${extension}`;
+  const targetDirectory = resolve(uploadRoot, ...targetSegments);
+  const absolutePath = resolve(targetDirectory, filename);
   const buffer = Buffer.from(await file.arrayBuffer());
 
-  const { data, error } = await auth.supabase.storage.from(SITE_MEDIA_BUCKET).upload(uploadPath, buffer, {
-    contentType: file.type,
-    upsert: false,
-    cacheControl: "3600",
+  await mkdir(targetDirectory, { recursive: true });
+  await writeFile(absolutePath, buffer);
+
+  const relativeToPublic = relative(publicRoot, absolutePath).replace(/\\/g, "/");
+  const publicUrl = `/${relativeToPublic}`;
+  const prisma = getPrisma();
+
+  await recordAuditLog(prisma, {
+    adminUserId: auth.userId,
+    action: "site_media.uploaded",
+    entityType: "site_media",
+    entityId: publicUrl,
+    metadata: {
+      target,
+      fileName: file.name,
+      mimeType: file.type,
+      size: file.size,
+    },
+    ipAddress: auth.requestInfo.ipAddress,
+    userAgent: auth.requestInfo.userAgent,
   });
 
-  if (error || !data) {
-    return NextResponse.json({ message: "Gagal mengunggah gambar ke Supabase Storage." }, { status: 500 });
-  }
-
-  const publicUrl = auth.supabase.storage.from(SITE_MEDIA_BUCKET).getPublicUrl(data.path).data.publicUrl;
-
-  return NextResponse.json({
+  return jsonNoStore({
     message: "Gambar berhasil diunggah.",
     asset: {
-      path: data.path,
+      path: publicUrl,
       publicUrl,
       alt: alt || file.name,
     },

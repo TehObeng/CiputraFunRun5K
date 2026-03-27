@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AdminRole {
+  ADMIN
+}
+
+enum AdminStatus {
+  ACTIVE
+  DISABLED
+}
+
+model AdminUser {
+  id               String                @id @default(cuid())
+  email            String                @unique @db.VarChar(320)
+  name             String?               @db.VarChar(120)
+  passwordHash     String
+  role             AdminRole             @default(ADMIN)
+  status           AdminStatus           @default(ACTIVE)
+  sessions         AdminSession[]
+  auditLogs        AuditLog[]
+  contentUpdates   SiteContent[]         @relation("SiteContentUpdatedBy")
+  contentRevisions SiteContentRevision[] @relation("SiteContentRevisionCreatedBy")
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+}
+
+model AdminSession {
+  id         String    @id @default(cuid())
+  userId     String
+  tokenHash  String    @unique @db.VarChar(64)
+  expiresAt  DateTime
+  lastSeenAt DateTime  @default(now())
+  ipAddress  String?   @db.VarChar(120)
+  userAgent  String?   @db.VarChar(512)
+  revokedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  user       AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model SiteContent {
+  id              String                @id @default(cuid())
+  slug            String                @unique @db.VarChar(120)
+  content         Json
+  currentRevision Int                   @default(1)
+  updatedById     String?
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+  updatedBy       AdminUser?            @relation("SiteContentUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+  revisions       SiteContentRevision[]
+
+  @@index([updatedAt])
+}
+
+model SiteContentRevision {
+  id            String     @id @default(cuid())
+  siteContentId String
+  revision      Int
+  content       Json
+  createdById   String?
+  createdAt     DateTime   @default(now())
+  siteContent   SiteContent @relation(fields: [siteContentId], references: [id], onDelete: Cascade)
+  createdBy     AdminUser? @relation("SiteContentRevisionCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@unique([siteContentId, revision])
+  @@index([createdAt])
+}
+
+model AuditLog {
+  id          String    @id @default(cuid())
+  adminUserId String?
+  action      String    @db.VarChar(120)
+  entityType  String    @db.VarChar(120)
+  entityId    String?   @db.VarChar(191)
+  metadata    Json?
+  ipAddress   String?   @db.VarChar(120)
+  userAgent   String?   @db.VarChar(512)
+  createdAt   DateTime  @default(now())
+  adminUser   AdminUser? @relation(fields: [adminUserId], references: [id], onDelete: SetNull)
+
+  @@index([action])
+  @@index([entityType])
+  @@index([createdAt])
+}

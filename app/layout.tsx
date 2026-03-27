@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     default: "Citraland Fun Run 5K Batam",
     template: "%s | Citraland Fun Run 5K Batam",
   },
-  description: "Official bilingual microsite for CitraLand Megah Treasure Hunt Fun Run 5K, including event details and sponsorship pages.",
+  description: "Official bilingual site for CitraLand Megah Treasure Hunt Fun Run 5K, including event details and sponsorship pages.",
   applicationName: "Citraland Fun Run 5K Batam",
   openGraph: {
     type: "website",

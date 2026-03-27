@@ -262,12 +262,12 @@ export const legacySiteContentSchema = z.object({
 });
 
 export const adminUserSchema = z.object({
-  user_id: requiredText,
+  id: requiredText,
   email: requiredText,
   role: z.literal("admin"),
   status: z.enum(["active", "disabled"]),
-  created_at: optionalText,
-  updated_at: optionalText,
+  createdAt: optionalText,
+  updatedAt: optionalText,
 });
 
 export type ImageAsset = z.infer<typeof imageAssetSchema>;

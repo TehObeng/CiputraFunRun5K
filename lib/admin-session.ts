@@ -1,10 +1,15 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
-import { NextResponse } from "next/server";
+import { AdminRole, AdminStatus } from "@prisma/client";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { NextResponse } from "next/server";
 
-import { hasSupabaseConfig } from "@/lib/env";
-import { adminUserSchema, type AdminUser } from "@/lib/site-schema";
-import { createServerSupabaseClient } from "@/lib/supabase";
+import { createSessionToken, hashSessionToken } from "@/lib/auth-security";
+import { env, hasAdminAuthConfig } from "@/lib/env";
+import { hasValidSameOrigin, jsonNoStore } from "@/lib/http-security";
+import { getPrisma } from "@/lib/prisma";
+import type { AdminUser } from "@/lib/site-schema";
+
+const ADMIN_SESSION_COOKIE = "admin_session";
 
 type AdminAuthSetupRequired = {
   status: "setup-required";
@@ -32,48 +37,118 @@ export type AdminAuthState =
   | AdminAuthForbidden
   | AdminAuthAuthenticated;
 
-async function getAdminUser(supabase: SupabaseClient, userId: string) {
-  const { data, error } = await supabase
-    .from("admin_users")
-    .select("user_id, email, role, status, created_at, updated_at")
-    .eq("user_id", userId)
-    .maybeSingle();
+type RequestClientInfo = {
+  ipAddress: string | null;
+  userAgent: string | null;
+};
 
-  if (error || !data) {
+type AdminApiFailure =
+  | {
+      ok: false;
+      response: NextResponse;
+    }
+  | {
+      ok: true;
+      userId: string;
+      email: string | null;
+      adminUser: AdminUser;
+      sessionId: string;
+      requestInfo: RequestClientInfo;
+    };
+
+function getSessionDurationMs() {
+  return env.adminSessionTtlHours * 60 * 60 * 1000;
+}
+
+function getRequestClientInfo(request: Request): RequestClientInfo {
+  const forwardedFor = request.headers.get("x-forwarded-for");
+  const ipAddress = forwardedFor?.split(",")[0]?.trim() ?? null;
+
+  return {
+    ipAddress,
+    userAgent: request.headers.get("user-agent"),
+  };
+}
+
+function isSecureCookie() {
+  return env.siteUrl.startsWith("https://") || process.env.NODE_ENV === "production";
+}
+
+function toAdminUser(user: {
+  id: string;
+  email: string;
+  role: AdminRole;
+  status: AdminStatus;
+  createdAt: Date;
+  updatedAt: Date;
+}): AdminUser {
+  return {
+    id: user.id,
+    email: user.email,
+    role: user.role === AdminRole.ADMIN ? "admin" : "admin",
+    status: user.status === AdminStatus.ACTIVE ? "active" : "disabled",
+    createdAt: user.createdAt.toISOString(),
+    updatedAt: user.updatedAt.toISOString(),
+  };
+}
+
+async function getSessionTokenFromCookies() {
+  const cookieStore = await cookies();
+  return cookieStore.get(ADMIN_SESSION_COOKIE)?.value ?? null;
+}
+
+async function getSessionContext(token: string | null) {
+  if (!token || !hasAdminAuthConfig()) {
     return null;
   }
 
-  const parsed = adminUserSchema.safeParse(data);
-  return parsed.success ? parsed.data : null;
+  const session = await getPrisma().adminSession.findUnique({
+    where: {
+      tokenHash: hashSessionToken(token),
+    },
+    include: {
+      user: true,
+    },
+  });
+
+  if (!session) {
+    return null;
+  }
+
+  const now = new Date();
+
+  if (session.revokedAt || session.expiresAt <= now) {
+    return null;
+  }
+
+  return session;
 }
 
 export async function getAdminAuthState(): Promise<AdminAuthState> {
-  if (!hasSupabaseConfig()) {
+  if (!hasAdminAuthConfig()) {
     return { status: "setup-required" };
   }
 
-  const supabase = await createServerSupabaseClient();
-  const claimsResult = await supabase.auth.getClaims();
-  const claims = claimsResult.data?.claims;
-  const userId = typeof claims?.sub === "string" ? claims.sub : null;
-  const email = typeof claims?.email === "string" ? claims.email : null;
+  try {
+    const session = await getSessionContext(await getSessionTokenFromCookies());
 
-  if (!userId) {
-    return { status: "unauthenticated" };
+    if (!session) {
+      return { status: "unauthenticated" };
+    }
+
+    if (session.user.role !== AdminRole.ADMIN || session.user.status !== AdminStatus.ACTIVE) {
+      return { status: "forbidden", email: session.user.email };
+    }
+
+    return {
+      status: "authenticated",
+      email: session.user.email,
+      userId: session.user.id,
+      adminUser: toAdminUser(session.user),
+    };
+  } catch {
+    return { status: "setup-required" };
   }
-
-  const adminUser = await getAdminUser(supabase, userId);
-
-  if (!adminUser || adminUser.role !== "admin" || adminUser.status !== "active") {
-    return { status: "forbidden", email };
-  }
-
-  return {
-    status: "authenticated",
-    email,
-    userId,
-    adminUser,
-  };
 }
 
 export async function requireAdminPage() {
@@ -90,64 +165,121 @@ export async function requireAdminPage() {
   redirect("/admin/login");
 }
 
-type AdminApiFailure =
-  | {
-      ok: false;
-      response: NextResponse;
-    }
-  | {
-      ok: true;
-      supabase: SupabaseClient;
-      userId: string;
-      email: string | null;
-      adminUser: AdminUser;
-    };
-
-export async function requireAdminApi(): Promise<AdminApiFailure> {
-  if (!hasSupabaseConfig()) {
+export async function requireAdminApi(request: Request): Promise<AdminApiFailure> {
+  if (!hasAdminAuthConfig()) {
     return {
       ok: false,
-      response: NextResponse.json(
-        { message: "Supabase belum dikonfigurasi. Lengkapi environment variable lalu coba lagi." },
+      response: jsonNoStore(
+        { message: "Database admin belum dikonfigurasi. Lengkapi PostgreSQL dan ADMIN_SESSION_SECRET lalu coba lagi." },
         { status: 503 },
       ),
     };
   }
 
-  const supabase = await createServerSupabaseClient();
-  const claimsResult = await supabase.auth.getClaims();
-  const claims = claimsResult.data?.claims;
-  const userId = typeof claims?.sub === "string" ? claims.sub : null;
-  const email = typeof claims?.email === "string" ? claims.email : null;
-
-  if (!userId) {
+  if (!hasValidSameOrigin(request)) {
     return {
       ok: false,
-      response: NextResponse.json({ message: "Sesi login tidak ditemukan." }, { status: 401 }),
+      response: jsonNoStore({ message: "Origin request tidak diizinkan." }, { status: 403 }),
     };
   }
 
-  const adminUser = await getAdminUser(supabase, userId);
+  try {
+    const session = await getSessionContext(await getSessionTokenFromCookies());
 
-  if (!adminUser) {
+    if (!session) {
+      return {
+        ok: false,
+        response: jsonNoStore({ message: "Sesi login tidak ditemukan." }, { status: 401 }),
+      };
+    }
+
+    if (session.user.role !== AdminRole.ADMIN || session.user.status !== AdminStatus.ACTIVE) {
+      return {
+        ok: false,
+        response: jsonNoStore({ message: "Akun ini tidak memiliki akses admin aktif." }, { status: 403 }),
+      };
+    }
+
+    return {
+      ok: true,
+      userId: session.user.id,
+      email: session.user.email,
+      adminUser: toAdminUser(session.user),
+      sessionId: session.id,
+      requestInfo: getRequestClientInfo(request),
+    };
+  } catch {
     return {
       ok: false,
-      response: NextResponse.json({ message: "Akun ini tidak memiliki akses admin." }, { status: 403 }),
+      response: jsonNoStore({ message: "Koneksi database admin sedang bermasalah." }, { status: 503 }),
     };
   }
+}
 
-  if (adminUser.status !== "active") {
-    return {
-      ok: false,
-      response: NextResponse.json({ message: "Akun admin ini sedang dinonaktifkan." }, { status: 403 }),
-    };
-  }
+export async function createAdminSession(userId: string, request: Request) {
+  const token = createSessionToken();
+  const expiresAt = new Date(Date.now() + getSessionDurationMs());
+  const requestInfo = getRequestClientInfo(request);
+
+  const session = await getPrisma().adminSession.create({
+    data: {
+      userId,
+      tokenHash: hashSessionToken(token),
+      expiresAt,
+      lastSeenAt: new Date(),
+      ipAddress: requestInfo.ipAddress,
+      userAgent: requestInfo.userAgent,
+    },
+  });
 
   return {
-    ok: true,
-    supabase,
-    userId,
-    email,
-    adminUser,
+    sessionId: session.id,
+    token,
+    expiresAt,
+    requestInfo,
   };
+}
+
+export async function revokeAdminSession(token: string | null) {
+  if (!token || !hasAdminAuthConfig()) {
+    return;
+  }
+
+  await getPrisma().adminSession.updateMany({
+    where: {
+      tokenHash: hashSessionToken(token),
+      revokedAt: null,
+    },
+    data: {
+      revokedAt: new Date(),
+    },
+  });
+}
+
+export async function getCurrentAdminSessionToken() {
+  return getSessionTokenFromCookies();
+}
+
+export function attachAdminSessionCookie(response: NextResponse, token: string, expiresAt: Date) {
+  response.cookies.set({
+    name: ADMIN_SESSION_COOKIE,
+    value: token,
+    httpOnly: true,
+    sameSite: "lax",
+    secure: isSecureCookie(),
+    path: "/",
+    expires: expiresAt,
+  });
+}
+
+export function clearAdminSessionCookie(response: NextResponse) {
+  response.cookies.set({
+    name: ADMIN_SESSION_COOKIE,
+    value: "",
+    httpOnly: true,
+    sameSite: "lax",
+    secure: isSecureCookie(),
+    path: "/",
+    expires: new Date(0),
+  });
 }

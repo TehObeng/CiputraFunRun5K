@@ -200,7 +200,7 @@ export function CmsEditor({ initialContent, adminEmail }: CmsEditorProps) {
       setSavedSnapshot(payload.data);
       setFeedback({
         type: "success",
-        message: payload.message ?? "Perubahan sudah tersimpan ke Supabase.",
+        message: payload.message ?? "Perubahan sudah tersimpan ke database.",
       });
       router.refresh();
     });
@@ -220,13 +220,13 @@ export function CmsEditor({ initialContent, adminEmail }: CmsEditorProps) {
         <header className="rounded-[36px] bg-brand-night px-6 py-6 text-white shadow-[0_24px_80px_rgba(7,11,24,0.24)] md:px-8 md:py-8">
           <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
             <div className="max-w-3xl">
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-brand-lime">Supabase CMS</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-brand-lime">Admin CMS</p>
               <h1 className="mt-4 text-3xl font-bold leading-tight md:text-5xl">
                 One editing surface for the full landing page experience.
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-8 text-white/74 md:text-lg">
                 This dashboard controls hero copy, pricing, FAQ, timeline, footer details, and selected media assets
-                from one structured content document in Supabase.
+                from one structured content document in PostgreSQL.
               </p>
             </div>
 

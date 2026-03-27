@@ -1,7 +1,7 @@
 export const enBrand = {
-  eyebrow: "Sponsorship Proposal",
+  eyebrow: "Official Event Site",
   name: "CitraLand Megah Treasure Hunt Fun Run 5K",
-  strapline: "May 24, 2026 · Emerald Hills, CitraLand Megah Batam",
+  strapline: "May 24, 2026 - Emerald Hills, CitraLand Megah Batam",
 } as const;
 
 export const enNavigation = {
@@ -14,8 +14,8 @@ export const enNavigation = {
 
 export const enFooter = {
   description:
-    "This microsite restructures the CitraLand Megah Treasure Hunt Fun Run 5K sponsorship deck into a clearer bilingual web experience.",
-  note: "The focus is event clarity, operational confidence, and sponsorship value that is easier to understand quickly.",
+    "CitraLand Megah Treasure Hunt Fun Run 5K brings together a 5K community run, treasure hunt moments, live entertainment, and partner activations in one energetic morning.",
+  note: "Explore the event flow, review brand partnership opportunities, and continue to registration or sponsor contact from the path that fits you best.",
   contactLabel: "Contact",
   socialLabel: "Social channels",
   rightsLabel: "Copyright",

@@ -1,42 +1,51 @@
-# Citraland Fun Run 5K Batam
+# CitraLand Fun Run 5K Batam
 
-Marketing landing page and admin CMS built with Next.js, Supabase Auth, Supabase Storage, and a single structured content document for the public website.
-
-## What changed
-
-- Public site content is now driven by a nested `LandingPageContent` schema instead of a flat JSON file.
-- Admin authentication no longer uses env-based username/password login. It is designed for Supabase Auth plus an `admin_users` role table.
-- The CMS can edit hero, overview, experience, timeline, pricing, FAQ, registration copy, footer content, SEO, and selected media assets.
-- Public registration CTAs now read from CMS data instead of a hardcoded override.
-- The landing page and admin UI share a cleaner design system and responsive layout.
+Marketing site and admin CMS built with Next.js 16, React 19, Tailwind CSS 4, PostgreSQL, and Prisma.
 
 ## Stack
 
 - Next.js 16 App Router
 - React 19
+- TypeScript
 - Tailwind CSS 4
-- Supabase SSR Auth helpers
-- Supabase Storage
+- PostgreSQL
+- Prisma ORM
 - Zod
-- Framer Motion
 
-## Core architecture
+## What changed
 
-- Public site: reads one document from `public.site_content` with `slug = 'landing-page'`.
-- CMS: edits the same document through `/api/admin/content`.
-- Auth: uses Supabase Auth session cookies plus `public.admin_users` for admin role checks.
-- Media uploads: use the `site-media` Supabase Storage bucket through `/api/admin/media`.
-- Fallback behavior: if Supabase is not configured locally, the public site still renders from safe defaults and the admin login page shows a setup-required message.
+- Supabase runtime usage has been removed.
+- Admin authentication now uses hashed passwords plus hashed session tokens stored in PostgreSQL.
+- Site content is stored as structured JSON in `SiteContent`, with revision history in `SiteContentRevision`.
+- Audit events are recorded in `AuditLog`.
+- Admin uploads are written to local disk under `public/uploads`, which keeps VPS deployment simple.
+- Public pages now use a tighter token-based design system with improved spacing, contrast, and responsive behavior.
+
+## Data model
+
+Prisma models:
+
+- `AdminUser`
+- `AdminSession`
+- `SiteContent`
+- `SiteContentRevision`
+- `AuditLog`
+
+Schema file:
+
+- [`prisma/schema.prisma`](/C:/Users/danel/Documents/Project/FunRun%20Site/prisma/schema.prisma)
+
+Initial SQL migration:
+
+- [`prisma/migrations/20260327_init/migration.sql`](/C:/Users/danel/Documents/Project/FunRun%20Site/prisma/migrations/20260327_init/migration.sql)
+
+Seed script:
+
+- [`prisma/seed.ts`](/C:/Users/danel/Documents/Project/FunRun%20Site/prisma/seed.ts)
 
 ## Environment
 
-Copy `.env.example` to `.env.local` and fill in the real values:
-
-```bash
-cp .env.example .env.local
-```
-
-PowerShell:
+Copy `.env.example` to `.env.local` and update the values:
 
 ```powershell
 Copy-Item .env.example .env.local
@@ -45,69 +54,73 @@ Copy-Item .env.example .env.local
 Required variables:
 
 ```env
-SITE_URL=http://localhost:3000
-NEXT_PUBLIC_SUPABASE_URL=https://your-project-ref.supabase.co
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-publishable-or-anon-key
+SITE_URL=https://run.example.com
+DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/funrun_site
+ADMIN_SESSION_SECRET=replace-with-a-long-random-secret
 ```
 
-Optional compatibility alias:
+Recommended variables:
 
 ```env
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+ADMIN_SESSION_TTL_HOURS=168
+UPLOAD_DIR=public/uploads
+ADMIN_SEED_EMAIL=admin@example.com
+ADMIN_SEED_PASSWORD=ChangeMe!12345
+ADMIN_SEED_NAME=Fun Run Admin
 ```
-
-## Supabase setup
-
-1. Run the SQL migration in [`supabase/migrations/20260326_funrun_rebuild.sql`](/C:/Users/danel/Documents/Project/FunRun%20Site/supabase/migrations/20260326_funrun_rebuild.sql).
-2. Create or invite the first admin user in Supabase Auth.
-3. Insert that user into `public.admin_users`.
-
-Example bootstrap query:
-
-```sql
-insert into public.admin_users (user_id, email, role, status)
-values ('YOUR_AUTH_USER_ID', 'admin@example.com', 'admin', 'active');
-```
-
-Notes:
-
-- The public site can read the `landing-page` document through RLS.
-- Admin routes and APIs require both a valid Supabase session and an active row in `admin_users`.
-- The `site-media` bucket is public-read and admin-write.
 
 ## Local development
 
-Install dependencies and run the app:
-
 ```bash
 npm install
+npm run prisma:generate
 npm run dev
 ```
 
 Useful URLs:
 
 - Site: `http://localhost:3000`
-- Admin login: `http://localhost:3000/admin`
+- Admin login: `http://localhost:3000/admin/login`
 
-If Supabase env vars are missing, the site still renders default content but admin login and admin APIs will return setup-required responses until the environment is configured.
+If `DATABASE_URL` is not configured, the public site still renders safe fallback content and the admin area shows a setup-required state.
 
-## Content model
+## Database setup
 
-The editable landing page document is split into these sections:
+Apply the migration and seed the first admin/content row:
 
-- `brand`
-- `announcement`
-- `hero`
-- `overview`
-- `experience`
-- `timeline`
-- `pricing`
-- `faq`
-- `registration`
-- `footer`
-- `seo`
+```bash
+npm run prisma:migrate
+npm run prisma:seed
+```
 
-The schema lives in [`lib/site-schema.ts`](/C:/Users/danel/Documents/Project/FunRun%20Site/lib/site-schema.ts), and default fallback content lives in [`lib/default-content.ts`](/C:/Users/danel/Documents/Project/FunRun%20Site/lib/default-content.ts).
+If `ADMIN_SEED_PASSWORD` is omitted, the seed script generates a password and prints it once in the terminal.
+
+## Deployment notes
+
+Recommended target:
+
+- Ubuntu or Debian VPS
+- Node.js runtime
+- PostgreSQL on the same VPS or private LAN
+- Reverse proxy or Cloudflare Tunnel in front of the Next.js app
+
+Suggested deployment flow:
+
+```bash
+npm ci
+npm run prisma:generate
+npm run build
+npm run prisma:migrate
+npm run prisma:seed
+npm run start
+```
+
+Operational notes:
+
+- Persist `public/uploads` on disk or bind it to a volume.
+- Set a strong `ADMIN_SESSION_SECRET` in production.
+- Rotate the seeded admin password after first login.
+- Point `SITE_URL` to the final public domain behind Cloudflare Tunnel.
 
 ## Scripts
 
@@ -117,23 +130,7 @@ npm run lint
 npm run typecheck
 npm run build
 npm run start
+npm run prisma:generate
+npm run prisma:migrate
+npm run prisma:seed
 ```
-
-## Verified in this rebuild
-
-- `npm run lint`
-- `npm run typecheck`
-- `npm run build`
-- Desktop browser check of the public landing page
-- Mobile browser check of the public landing page
-- Guarded `/admin` redirect behavior
-- Setup-required state for admin login when Supabase env is missing
-- Setup-required API responses for `/api/admin/content`, `/api/admin/login`, and `/api/admin/media`
-
-## Remaining operational steps
-
-- Add real Supabase environment variables to `.env.local`.
-- Create the first admin user in Supabase Auth and `admin_users`.
-- Save the first CMS document so `site_content.slug = 'landing-page'` exists in the database.
-
-Without those steps, the public site will continue using the baked-in defaults and the admin area will stay in setup mode.

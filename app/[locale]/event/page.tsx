@@ -30,12 +30,14 @@ export default async function EventPage({ params }: EventPageProps) {
   const locale = rawLocale;
   const copy = getSiteCopy(locale);
   const runtime = await getPublicRuntime();
+  const advantageLabel = locale === "id" ? "Keunggulan utama" : "Core advantage";
+  const afterRunLabel = locale === "id" ? "Pasca-lari" : "After run";
 
   return (
-    <main id="main-content">
-      <section className="relative overflow-hidden bg-brand-night py-18 text-white md:py-24">
+    <main id="main-content" className="bg-brand-surface">
+      <section className="relative overflow-hidden bg-brand-night section-space text-white">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_14%_22%,rgba(208,255,54,0.12),transparent_22%),radial-gradient(circle_at_84%_16%,rgba(255,154,31,0.16),transparent_18%)]" />
-        <div className="relative mx-auto grid w-[min(1200px,calc(100%-1.5rem))] gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.86fr)]">
+        <div className="page-shell relative grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.86fr)]">
           <PublicSectionHeading
             eyebrow={copy.event.intro.eyebrow}
             title={copy.event.intro.title}
@@ -43,7 +45,7 @@ export default async function EventPage({ params }: EventPageProps) {
             inverted
           />
 
-          <div className="rounded-[30px] border border-white/10 bg-white/6 p-6 backdrop-blur">
+          <div className="reveal-up reveal-delay-1 rounded-[30px] border border-white/10 bg-white/6 p-6 backdrop-blur">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-lime">{copy.event.route.eyebrow}</p>
             <p className="mt-3 text-2xl font-bold">{copy.event.route.title}</p>
             <p className="mt-3 text-sm leading-7 text-white/72">{copy.event.route.description}</p>
@@ -59,12 +61,12 @@ export default async function EventPage({ params }: EventPageProps) {
         </div>
       </section>
 
-      <section className="py-18 md:py-24">
-        <div className="mx-auto w-[min(1200px,calc(100%-1.5rem))] space-y-12">
+      <section className="section-space">
+        <div className="page-shell space-y-12">
           <div className="grid gap-5 md:grid-cols-3">
             {copy.event.advantages.map((item) => (
-              <div key={item.title} className="rounded-[28px] border border-brand-line bg-brand-paper p-6 shadow-[0_18px_40px_rgba(11,22,40,0.05)]">
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-orange">Core advantage</p>
+              <div key={item.title} className="section-panel hover-lift rounded-[28px] bg-brand-paper p-6">
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-orange">{advantageLabel}</p>
                 <h2 className="mt-4 text-2xl font-bold text-brand-night">{item.title}</h2>
                 <p className="mt-3 text-base leading-8 text-brand-muted">{item.description}</p>
               </div>
@@ -73,8 +75,8 @@ export default async function EventPage({ params }: EventPageProps) {
         </div>
       </section>
 
-      <section className="bg-brand-paper py-18 md:py-24">
-        <div className="mx-auto grid w-[min(1200px,calc(100%-1.5rem))] gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(320px,1fr)] lg:gap-16">
+      <section className="section-divider bg-brand-paper section-space">
+        <div className="page-shell grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(320px,1fr)] lg:gap-16">
           <PublicSectionHeading
             eyebrow={copy.event.route.eyebrow}
             title={copy.event.route.title}
@@ -83,7 +85,7 @@ export default async function EventPage({ params }: EventPageProps) {
 
           <div className="grid gap-4 md:grid-cols-2">
             {copy.event.route.checkpoints.map((checkpoint, index) => (
-              <div key={checkpoint} className="rounded-[24px] border border-brand-line bg-white p-5">
+              <div key={checkpoint} className="section-panel-quiet hover-lift rounded-[24px] bg-white p-5">
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-muted">{String(index + 1).padStart(2, "0")}</p>
                 <p className="mt-3 text-lg font-bold text-brand-night">{checkpoint}</p>
               </div>
@@ -92,8 +94,8 @@ export default async function EventPage({ params }: EventPageProps) {
         </div>
       </section>
 
-      <section className="py-18 md:py-24">
-        <div className="mx-auto grid w-[min(1200px,calc(100%-1.5rem))] gap-12 lg:grid-cols-[minmax(0,0.86fr)_minmax(320px,1fr)]">
+      <section className="section-space">
+        <div className="page-shell grid gap-12 lg:grid-cols-[minmax(0,0.86fr)_minmax(320px,1fr)]">
           <PublicSectionHeading
             eyebrow={copy.event.timeline.eyebrow}
             title={copy.event.timeline.title}
@@ -120,8 +122,8 @@ export default async function EventPage({ params }: EventPageProps) {
         </div>
       </section>
 
-      <section className="bg-brand-paper py-18 md:py-24">
-        <div className="mx-auto w-[min(1200px,calc(100%-1.5rem))] space-y-12">
+      <section className="section-divider bg-brand-paper section-space">
+        <div className="page-shell space-y-12">
           <PublicSectionHeading
             eyebrow={copy.event.afterRun.eyebrow}
             title={copy.event.afterRun.title}
@@ -130,8 +132,8 @@ export default async function EventPage({ params }: EventPageProps) {
 
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {copy.event.afterRun.items.map((item) => (
-              <div key={item.title} className="rounded-[26px] border border-brand-line bg-white p-5 shadow-[0_16px_38px_rgba(11,22,40,0.05)]">
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-orange">After run</p>
+              <div key={item.title} className="section-panel hover-lift rounded-[26px] bg-white p-5">
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-brand-orange">{afterRunLabel}</p>
                 <h3 className="mt-4 text-2xl font-bold text-brand-night">{item.title}</h3>
                 <p className="mt-3 text-base leading-8 text-brand-muted">{item.description}</p>
               </div>
@@ -140,8 +142,8 @@ export default async function EventPage({ params }: EventPageProps) {
         </div>
       </section>
 
-      <section className="py-18 md:py-24">
-        <div className="mx-auto grid w-[min(1200px,calc(100%-1.5rem))] gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(340px,0.82fr)] lg:gap-16">
+      <section className="section-space">
+        <div className="page-shell grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(340px,0.82fr)] lg:gap-16">
           <PublicSectionHeading
             eyebrow={copy.event.participantKit.eyebrow}
             title={copy.event.participantKit.title}
@@ -150,7 +152,7 @@ export default async function EventPage({ params }: EventPageProps) {
 
           <div className="space-y-4">
             {copy.event.participantKit.items.map((item) => (
-              <div key={item} className="grid grid-cols-[auto_minmax(0,1fr)] gap-4 rounded-[24px] border border-brand-line bg-brand-paper p-5">
+              <div key={item} className="section-panel hover-lift grid grid-cols-[auto_minmax(0,1fr)] gap-4 rounded-[24px] bg-brand-paper p-5">
                 <div className="mt-1 rounded-full bg-brand-night p-2 text-brand-lime">
                   <Flag className="size-4" />
                 </div>
@@ -161,8 +163,8 @@ export default async function EventPage({ params }: EventPageProps) {
         </div>
       </section>
 
-      <section className="py-18 md:py-24">
-        <div className="mx-auto overflow-hidden rounded-[36px] bg-[linear-gradient(135deg,#081120_0%,#12253d_55%,#193128_100%)] text-white shadow-[0_30px_90px_rgba(6,10,22,0.18)]">
+      <section className="section-space">
+        <div className="page-shell overflow-hidden rounded-[36px] bg-[linear-gradient(135deg,#081120_0%,#12253d_55%,#193128_100%)] text-white shadow-[0_30px_90px_rgba(6,10,22,0.18)]">
           <div className="grid gap-10 p-6 md:p-8 lg:grid-cols-[minmax(0,0.94fr)_minmax(320px,0.8fr)] lg:gap-14 lg:p-12">
             <div className="space-y-6">
               <p className="text-sm font-semibold uppercase tracking-[0.28em] text-brand-lime">{copy.event.specialMoment.eyebrow}</p>

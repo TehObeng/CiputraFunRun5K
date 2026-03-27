@@ -45,13 +45,13 @@ export function LoginPanel({ setupRequired = false }: LoginPanelProps) {
       <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-6xl gap-6 lg:grid-cols-[1.05fr_0.95fr]">
         <section className="hero-panel flex flex-col justify-between rounded-[36px] border border-white/10 p-7 shadow-[0_24px_80px_rgba(7,11,24,0.34)] md:p-10">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-brand-lime">Supabase CMS</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-brand-lime">Admin CMS</p>
             <h1 className="mt-4 max-w-[12ch] text-4xl font-bold leading-none md:text-6xl">
               Kelola landing page seperti produk yang siap publish.
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-8 text-white/76 md:text-lg">
-              Login dengan akun admin Supabase untuk memperbarui konten, CTA pendaftaran, FAQ, harga, timeline, dan
-              aset visual penting tanpa menyentuh source code.
+              Login dengan akun admin untuk memperbarui konten, CTA pendaftaran, FAQ, harga, timeline, dan aset visual
+              penting tanpa menyentuh source code.
             </p>
           </div>
 
@@ -66,7 +66,7 @@ export function LoginPanel({ setupRequired = false }: LoginPanelProps) {
             </div>
             <div className="rounded-[24px] border border-white/10 bg-white/6 p-5">
               <p className="text-xs uppercase tracking-[0.2em] text-white/56">Media</p>
-              <p className="mt-3 text-lg font-semibold">Supabase Storage uploads</p>
+              <p className="mt-3 text-lg font-semibold">Local asset uploads</p>
             </div>
           </div>
         </section>
@@ -78,14 +78,14 @@ export function LoginPanel({ setupRequired = false }: LoginPanelProps) {
             </div>
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-muted">Admin sign in</p>
-              <p className="mt-1 text-lg font-bold">Gunakan email admin Supabase yang aktif</p>
+              <p className="mt-1 text-lg font-bold">Gunakan email admin yang aktif</p>
             </div>
           </div>
 
           {setupRequired ? (
             <div className="mt-6 rounded-[24px] border border-amber-200 bg-amber-50 px-4 py-4 text-sm leading-7 text-amber-800">
-              Supabase belum dikonfigurasi di environment saat ini. Isi `NEXT_PUBLIC_SUPABASE_URL` dan
-              `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` atau `NEXT_PUBLIC_SUPABASE_ANON_KEY` sebelum mencoba login.
+              PostgreSQL admin belum dikonfigurasi di environment saat ini. Isi `DATABASE_URL` dan
+              `ADMIN_SESSION_SECRET` sebelum mencoba login.
             </div>
           ) : null}
 
@@ -133,7 +133,8 @@ export function LoginPanel({ setupRequired = false }: LoginPanelProps) {
               Hal yang perlu disiapkan
             </div>
             <p className="mt-2">
-              Pastikan akun email ini sudah terdaftar di Supabase Auth dan punya baris aktif di tabel `admin_users`.
+              Pastikan akun email ini sudah tersimpan sebagai admin aktif di PostgreSQL dan password awalnya sudah
+              dibuat saat proses seed.
             </p>
           </div>
         </section>

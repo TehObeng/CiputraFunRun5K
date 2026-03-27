@@ -6,9 +6,9 @@ export const idSponsorship = {
   },
   intro: {
     eyebrow: "Sponsorship",
-    title: "Halaman partner yang menurunkan isi deck sponsor menjadi argumentasi digital yang lebih cepat dipahami.",
+    title: "Peluang partner yang dirancang agar nilai brand cepat terlihat dan mudah dievaluasi.",
     description:
-      "Semua data audiens, estimasi reach, paket sponsor, dan timeline perencanaan disusun agar calon partner dapat menilai peluang brand secara langsung.",
+      "Data audiens, estimasi reach, paket sponsor, dan timeline perencanaan disusun agar calon partner dapat menilai peluang kolaborasi secara langsung.",
   },
   demographics: {
     eyebrow: "Audiens & demografi",
@@ -34,7 +34,7 @@ export const idSponsorship = {
     eyebrow: "Eksposur brand",
     title: "Kampanye brand dibangun lintas fase, bukan hanya satu hari event.",
     description:
-      "Materi deck menegaskan tiga fase eksposur utama: pra-acara, hari acara, dan pasca-acara, lalu diperkuat dengan jaringan komunitas dan media lokal.",
+      "Eksposur utama berjalan di fase pra-acara, hari acara, dan pasca-acara, lalu diperkuat lewat jaringan komunitas dan media lokal.",
     phases: [
       {
         label: "Pra-acara (8 minggu)",
@@ -60,7 +60,7 @@ export const idSponsorship = {
     eyebrow: "Paket sponsorship",
     title: "Tiga paket utama dan satu opsi in-kind untuk kebutuhan kolaborasi yang lebih fleksibel.",
     description:
-      "Struktur paket mengikuti deck: mulai dari hak kategori eksklusif hingga visibilitas brand kuat dengan harga yang lebih ringan.",
+      "Setiap paket dirancang untuk memberi kombinasi visibilitas, aktivasi, dan ruang interaksi yang sesuai dengan target partner.",
     tiers: [
       {
         name: "Platinum",
@@ -115,14 +115,14 @@ export const idSponsorship = {
     ],
     inKind: {
       title: "Sponsor In-Kind",
-      description: "Dukungan air, makanan, peralatan, layanan, hadiah, atau bentuk barang/jasa lain tetap terbuka dan bisa dibicarakan sebagai paket custom.",
+      description: "Dukungan air, makanan, peralatan, layanan, hadiah, atau bentuk barang dan jasa lain tetap terbuka sebagai paket kolaborasi custom.",
     },
   },
   benefits: {
     eyebrow: "Benefit partner",
     title: "Setiap kategori sponsor mendapatkan kombinasi visibility, activation, dan engagement.",
     description:
-      "Benefit berikut merangkum slide partner deck menjadi struktur yang lebih cepat dibaca oleh brand manager atau tim marketing.",
+      "Benefit berikut membantu brand manager atau tim marketing melihat nilai kerja sama secara cepat dan terstruktur.",
     groups: [
       {
         title: "Visibilitas merek",
@@ -154,7 +154,7 @@ export const idSponsorship = {
   timeline: {
     eyebrow: "Alur perencanaan",
     title: "Roadmap persiapan event disusun per minggu agar sponsor tahu kapan visibilitas mereka mulai bekerja.",
-    description: "Timeline ini penting untuk menunjukkan bahwa event memiliki tahapan kerja yang jelas, bukan hanya ide kreatif tanpa eksekusi.",
+    description: "Timeline ini menunjukkan bahwa event memiliki tahapan kerja yang jelas dari persiapan awal sampai eksekusi hari H.",
     phases: [
       {
         label: "Minggu 1-2",
@@ -177,7 +177,7 @@ export const idSponsorship = {
         points: ["Konfirmasi vendor dan pemasok", "Rekrut dan latih relawan", "Finalisasi rute dan signage", "Menyiapkan goodie bag dan reminder terakhir"],
       },
       {
-        label: "Hari H · 24 Mei 2026",
+        label: "Hari H - 24 Mei 2026",
         title: "Eksekusi acara",
         points: ["05.00 persiapan dan pendaftaran dibuka", "05.30 upacara pembukaan dan pemanasan", "06.00 race start", "08.30 treasure hunt", "09.00 penyerahan hadiah dan penutupan"],
       },

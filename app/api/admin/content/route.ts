@@ -1,34 +1,32 @@
-import { NextResponse } from "next/server";
+import type { Prisma } from "@prisma/client";
 
+import { getPrisma } from "@/lib/prisma";
+import { recordAuditLog } from "@/lib/audit-log";
 import { requireAdminApi } from "@/lib/admin-session";
-import { getDefaultContent, normalizeLandingPageContent } from "@/lib/site-content";
+import { jsonNoStore } from "@/lib/http-security";
+import { getDefaultContent, getLandingPageContentRecord, normalizeLandingPageContent, SITE_CONTENT_SLUG } from "@/lib/site-content";
 import { landingPageContentSchema } from "@/lib/site-schema";
-import { SITE_CONTENT_SLUG } from "@/lib/supabase";
 
-export async function GET() {
-  const auth = await requireAdminApi();
+export async function GET(request: Request) {
+  const auth = await requireAdminApi(request);
 
   if (!auth.ok) {
     return auth.response;
   }
 
-  const { data, error } = await auth.supabase
-    .from("site_content")
-    .select("content")
-    .eq("slug", SITE_CONTENT_SLUG)
-    .maybeSingle();
+  const record = await getLandingPageContentRecord();
 
-  if (error || !data?.content) {
-    return NextResponse.json({ data: getDefaultContent() });
+  if (!record?.content) {
+    return jsonNoStore({ data: getDefaultContent() });
   }
 
-  return NextResponse.json({
-    data: normalizeLandingPageContent(data.content) ?? getDefaultContent(),
+  return jsonNoStore({
+    data: normalizeLandingPageContent(record.content) ?? getDefaultContent(),
   });
 }
 
 export async function PUT(request: Request) {
-  const auth = await requireAdminApi();
+  const auth = await requireAdminApi(request);
 
   if (!auth.ok) {
     return auth.response;
@@ -38,7 +36,7 @@ export async function PUT(request: Request) {
   const parsed = landingPageContentSchema.safeParse(body);
 
   if (!parsed.success) {
-    return NextResponse.json(
+    return jsonNoStore(
       {
         message: "Validasi konten gagal. Periksa kembali field yang masih kosong atau salah format.",
         errors: parsed.error.flatten(),
@@ -47,28 +45,73 @@ export async function PUT(request: Request) {
     );
   }
 
-  const payload = {
-    slug: SITE_CONTENT_SLUG,
-    content: parsed.data,
-    updated_at: new Date().toISOString(),
-    updated_by: auth.userId,
-  };
+  try {
+    const updatedRecord = await getPrisma().$transaction(async (tx) => {
+      const existing = await tx.siteContent.findUnique({
+        where: { slug: SITE_CONTENT_SLUG },
+        select: { id: true, currentRevision: true },
+      });
 
-  const { data, error } = await auth.supabase
-    .from("site_content")
-    .upsert(payload, {
-      onConflict: "slug",
-      ignoreDuplicates: false,
-    })
-    .select("content")
-    .single();
+      const siteContent = existing
+        ? await tx.siteContent.update({
+            where: { slug: SITE_CONTENT_SLUG },
+            data: {
+              content: parsed.data,
+              currentRevision: {
+                increment: 1,
+              },
+              updatedById: auth.userId,
+            },
+            select: {
+              id: true,
+              content: true,
+              currentRevision: true,
+            },
+          })
+        : await tx.siteContent.create({
+            data: {
+              slug: SITE_CONTENT_SLUG,
+              content: parsed.data,
+              currentRevision: 1,
+              updatedById: auth.userId,
+            },
+            select: {
+              id: true,
+              content: true,
+              currentRevision: true,
+            },
+          });
 
-  if (error) {
-    return NextResponse.json({ message: "Gagal menyimpan perubahan ke Supabase." }, { status: 500 });
+      await tx.siteContentRevision.create({
+        data: {
+          siteContentId: siteContent.id,
+          revision: siteContent.currentRevision,
+          content: siteContent.content as Prisma.InputJsonValue,
+          createdById: auth.userId,
+        },
+      });
+
+      await recordAuditLog(tx, {
+        adminUserId: auth.userId,
+        action: existing ? "site_content.updated" : "site_content.created",
+        entityType: "site_content",
+        entityId: siteContent.id,
+        metadata: {
+          slug: SITE_CONTENT_SLUG,
+          revision: siteContent.currentRevision,
+        },
+        ipAddress: auth.requestInfo.ipAddress,
+        userAgent: auth.requestInfo.userAgent,
+      });
+
+      return siteContent;
+    });
+
+    return jsonNoStore({
+      message: "Konten landing page berhasil disimpan.",
+      data: normalizeLandingPageContent(updatedRecord.content) ?? parsed.data,
+    });
+  } catch {
+    return jsonNoStore({ message: "Gagal menyimpan perubahan ke PostgreSQL." }, { status: 500 });
   }
-
-  return NextResponse.json({
-    message: "Konten landing page berhasil disimpan.",
-    data: normalizeLandingPageContent(data.content) ?? parsed.data,
-  });
 }

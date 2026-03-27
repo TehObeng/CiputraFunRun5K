@@ -4,11 +4,9 @@ import { redirect } from "next/navigation";
 import { LoginPanel } from "@/components/admin/login-panel";
 import { getAdminAuthState } from "@/lib/admin-session";
 
-export const dynamic = "force-dynamic";
-
 export const metadata: Metadata = {
   title: "Admin Login",
-  description: "Masuk ke CMS Citraland Fun Run 5K Batam menggunakan Supabase Auth.",
+  description: "Masuk ke CMS Citraland Fun Run 5K Batam.",
 };
 
 export default async function AdminLoginPage() {

@@ -6,18 +6,18 @@ export const idEvent = {
   },
   intro: {
     eyebrow: "Detail event",
-    title: "Rute 5K yang rapi, aktif, dan terasa seperti pengalaman komunitas, bukan sekadar lomba singkat.",
+    title: "Rute 5K yang rapi, aktif, dan terasa seperti pengalaman komunitas yang menyenangkan.",
     description:
-      "Slide event pada deck dipecah menjadi blok informasi yang lebih mudah dipindai: keunggulan rute, titik pendukung, rundown hari H, sampai perlengkapan peserta.",
+      "Halaman ini merangkum titik penting hari H: keunggulan rute, titik pendukung, rundown acara, aktivasi pasca-lari, dan perlengkapan peserta.",
   },
   advantages: [
     {
-      title: "Spot foto yang bekerja untuk social sharing",
-      description: "Titik-titik visual di sepanjang rute membantu peserta memproduksi konten organik yang ikut memperpanjang reach sponsor.",
+      title: "Spot foto yang mendukung social sharing",
+      description: "Titik-titik visual di sepanjang rute membantu peserta membagikan pengalaman mereka secara organik.",
     },
     {
       title: "Format terbuka untuk pejalan kaki hingga runner komunitas",
-      description: "Fun run ini tidak terasa eksklusif hanya untuk pelari cepat, sehingga basis peserta bisa lebih lebar dan beragam.",
+      description: "Fun run ini terasa inklusif sehingga basis peserta bisa lebih lebar, santai, dan beragam.",
     },
     {
       title: "Finish area yang tetap hidup",
@@ -28,7 +28,7 @@ export const idEvent = {
     eyebrow: "Rute 5K",
     title: "Start dan finish kembali di CitraLand Megah Batam dengan water station di kilometer kunci.",
     description:
-      "Rute PPT dipertahankan sebagai perjalanan kota yang mudah dikomunikasikan ke peserta maupun partner brand yang ingin memahami visibilitas jalur.",
+      "Rute ini dirancang mudah dipahami peserta, nyaman dikomunikasikan panitia, dan jelas untuk partner yang ingin melihat visibilitas jalur.",
     checkpoints: [
       "CitraLand Megah Batam",
       "Masjid Raya Batam",
@@ -44,14 +44,14 @@ export const idEvent = {
   },
   timeline: {
     eyebrow: "Rundown & aktivitas",
-    title: "4 jam pengalaman penuh dari start gate sampai penutupan.",
+    title: "Empat jam pengalaman penuh dari start gate sampai penutupan.",
     description:
-      "Alur operasional dibuat ringkas supaya sponsor, panitia, dan peserta bisa memahami momen-momen penting tanpa membaca slide panjang.",
+      "Alur operasional dibuat ringkas agar sponsor, panitia, dan peserta dapat memahami momen-momen penting dalam satu kali baca.",
     items: [
       {
         time: "05.00 WIB",
         title: "Garis start dibuka",
-        description: "Musik pembuka, sesi pemanasan, booth sponsor aktif, dan area foto instagramable mulai hidup sejak peserta datang.",
+        description: "Musik pembuka, sesi pemanasan, booth sponsor aktif, dan area foto mulai hidup sejak peserta datang.",
       },
       {
         time: "Sepanjang rute",
@@ -73,7 +73,7 @@ export const idEvent = {
   afterRun: {
     eyebrow: "Aktivasi pasca-lari",
     title: "Finish area dirancang untuk menjaga energi crowd tetap tinggi.",
-    description: "Bagian ini penting untuk sponsor karena justru di sinilah interaksi onsite paling kuat terjadi.",
+    description: "Bagian ini penting karena justru di sinilah interaksi onsite paling kuat terjadi.",
     items: [
       {
         title: "DJ & musik live",
@@ -97,7 +97,7 @@ export const idEvent = {
     eyebrow: "Perlengkapan peserta",
     title: "Perangkat event yang membuat pengalaman terasa premium sejak registrasi.",
     description:
-      "PPT menyebutkan jersey, medali, lanyard, BIB, chip timing, dan goodie bag. Di web, semua item ini disusun sebagai value stack yang lebih mudah dipahami peserta.",
+      "Jersey, medali, lanyard, BIB, chip timing, dan goodie bag disusun sebagai paket manfaat yang mudah dipahami peserta sejak awal.",
     items: [
       "Jersey CitraLand Fun Run",
       "Medali finisher dan lanyard",

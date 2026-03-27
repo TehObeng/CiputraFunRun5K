@@ -1,31 +1,53 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f3eee6;
-  --foreground: #0b1628;
-  --panel: #fcf8f2;
+  --background: #f4ede3;
+  --surface: #fff8ef;
+  --surface-alt: #ede2d2;
+  --foreground: #091425;
+  --muted-foreground: #5d6878;
+  --primary: #ff8b2c;
+  --primary-foreground: #091425;
+  --border: #d9ccbb;
+  --ring: #ff8b2c;
+  --shadow-soft: 0 18px 42px rgba(9, 20, 37, 0.08);
+  --shadow-medium: 0 24px 64px rgba(9, 20, 37, 0.12);
+  --radius-card: 1.75rem;
+  --radius-panel: 2.25rem;
+  --container-max: 76rem;
+  --edge-space: clamp(1rem, 3vw, 2rem);
+  --section-space: clamp(4.25rem, 8vw, 7rem);
+  --section-space-tight: clamp(3rem, 6vw, 5rem);
+  --ease-standard: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
   --color-foreground: var(--foreground);
-  --color-panel: var(--panel);
-  --color-brand-night: #0b1628;
-  --color-brand-night-soft: #172538;
-  --color-brand-paper: #fcf8f2;
-  --color-brand-surface: #f3eee6;
-  --color-brand-wash: #ebe0cf;
-  --color-brand-line: #d9d0c2;
-  --color-brand-muted: #5f6678;
-  --color-brand-ink: #0b1628;
+  --color-muted-foreground: var(--muted-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-panel: var(--surface);
+  --color-brand-night: #091425;
+  --color-brand-night-soft: #15253a;
+  --color-brand-paper: var(--surface);
+  --color-brand-surface: var(--background);
+  --color-brand-wash: #efe1cf;
+  --color-brand-line: var(--border);
+  --color-brand-muted: var(--muted-foreground);
+  --color-brand-ink: var(--foreground);
   --color-brand-ink-soft: #172538;
   --color-brand-coral: #ff6b3d;
-  --color-brand-orange: #ff9a1f;
-  --color-brand-lime: #d0ff36;
-  --color-brand-sand: #f3eee6;
-  --color-brand-cream: #fcf8f2;
-  --color-brand-peach: #ffe2c7;
-  --color-brand-stone: #5f6678;
+  --color-brand-orange: var(--primary);
+  --color-brand-lime: #d8ff59;
+  --color-brand-sand: var(--background);
+  --color-brand-cream: var(--surface);
+  --color-brand-peach: #ffe4c8;
+  --color-brand-stone: var(--muted-foreground);
   --font-display: var(--font-space-grotesk);
   --font-sans: var(--font-plus-jakarta);
 }
@@ -38,20 +60,26 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
   min-height: 100vh;
   background:
-    radial-gradient(circle at top left, rgba(255, 154, 31, 0.08), transparent 22%),
-    radial-gradient(circle at right 12% top 14%, rgba(208, 255, 54, 0.1), transparent 18%),
-    linear-gradient(180deg, #f3eee6 0%, #f7f2ea 40%, #f3eee6 100%);
+    radial-gradient(circle at top left, rgba(255, 139, 44, 0.08), transparent 24%),
+    radial-gradient(circle at right 12% top 14%, rgba(216, 255, 89, 0.12), transparent 20%),
+    linear-gradient(180deg, #f4ede3 0%, #f8f2e9 40%, #f4ede3 100%);
   color: var(--foreground);
   font-family: var(--font-plus-jakarta), sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+main {
+  position: relative;
+  overflow-x: clip;
 }
 
 a {
-  color: inherit;
   text-decoration: none;
 }
 
@@ -60,9 +88,18 @@ img {
   max-width: 100%;
 }
 
+summary::-webkit-details-marker {
+  display: none;
+}
+
 ::selection {
-  background: rgba(255, 107, 61, 0.2);
-  color: #0b1628;
+  background: rgba(255, 139, 44, 0.18);
+  color: var(--foreground);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
 }
 
 @layer base {
@@ -74,11 +111,53 @@ img {
   h6 {
     font-family: var(--font-space-grotesk), sans-serif;
     letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
   }
 }
 
+.page-shell {
+  width: min(var(--container-max), calc(100% - (var(--edge-space) * 2)));
+  margin-inline: auto;
+}
+
+.section-space {
+  padding-block: var(--section-space);
+}
+
+.section-space-tight {
+  padding-block: var(--section-space-tight);
+}
+
+.section-panel {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: color-mix(in srgb, var(--surface) 90%, white 10%);
+  box-shadow: var(--shadow-soft);
+}
+
+.section-panel-quiet {
+  border: 1px solid color-mix(in srgb, var(--border) 88%, white 12%);
+  border-radius: calc(var(--radius-card) - 0.25rem);
+  background: color-mix(in srgb, var(--surface) 78%, white 22%);
+}
+
+.section-panel-dark {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-panel);
+  background: linear-gradient(135deg, #081120 0%, #12253d 56%, #193128 100%);
+  box-shadow: 0 28px 70px rgba(6, 10, 22, 0.2);
+}
+
+.section-divider {
+  border-top: 1px solid color-mix(in srgb, var(--border) 80%, white 20%);
+}
+
 .section-anchor {
-  scroll-margin-top: 5.5rem;
+  scroll-margin-top: 6rem;
 }
 
 .text-balance {
@@ -87,9 +166,56 @@ img {
 
 .hero-panel {
   background:
-    radial-gradient(circle at 18% 18%, rgba(208, 255, 54, 0.12), transparent 26%),
+    radial-gradient(circle at 18% 18%, rgba(216, 255, 89, 0.12), transparent 26%),
     radial-gradient(circle at 82% 14%, rgba(255, 107, 61, 0.18), transparent 24%),
     linear-gradient(135deg, #081120 0%, #12253d 52%, #1b3029 100%);
+}
+
+.hover-lift {
+  transition:
+    transform 220ms var(--ease-standard),
+    box-shadow 220ms var(--ease-standard),
+    border-color 220ms ease,
+    background-color 220ms ease,
+    color 220ms ease;
+}
+
+.reveal-up {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: reveal-up 720ms var(--ease-standard) forwards;
+}
+
+.reveal-delay-1 {
+  animation-delay: 120ms;
+}
+
+.reveal-delay-2 {
+  animation-delay: 220ms;
+}
+
+.reveal-delay-3 {
+  animation-delay: 320ms;
+}
+
+@keyframes reveal-up {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-medium);
+  }
+}
+
+@media (max-width: 480px) {
+  .page-shell {
+    width: min(var(--container-max), calc(100% - 1rem));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -103,5 +229,11 @@ img {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .reveal-up {
+    opacity: 1;
+    transform: none;
+    animation: none;
   }
 }
