@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 
 import { getAdminAuthState } from "@/lib/admin-session";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Unauthorized",
   description: "Halaman ini memberi tahu bahwa akun saat ini belum punya akses admin aktif.",
